@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Wedding Gift Registry</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎉 Our Wedding Gift Registry</h1>
+    <p>Thank you for celebrating with us! Choose a gift, scan the FPS QR code, and let us know your name.</p>
+
+    <h2>Available Gifts</h2>
+    <div id="available"></div>
+
+    <h2>Gifted ❤️</h2>
+    <div id="gifted"></div>
+
+    <!-- Modal for claiming -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">×</span>
+        <img id="modal-img" src="" alt="" />
+        <h3 id="modal-name"></h3>
+        <p>HK$ <span id="modal-price"></span></p>
+        <p>Scan to pay via FPS:</p>
+        <img src="images/qr-fps.png" alt="FPS QR" class="qr" />
+        <input type="text" id="claimer-name" placeholder="Your name" required />
+        <button id="confirm-btn">I’ve paid – claim gift</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
