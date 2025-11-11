@@ -1,9 +1,9 @@
 [
   {
     "id": 1,
-    "name": "KitchenAid Stand Mixer",
+    "name": "Shiba Inu",
     "price": 3280,
-    "photo": "images/gift1.jpg",
+    "photo": "dog.jpg",
     "claimed": false,
     "claimedBy": ""
   },
