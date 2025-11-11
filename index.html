@@ -33,4 +33,91 @@
   </div>
 
   <!-- ADMIN RESET BUTTON (only you know it exists) -->
-  <div style="margin:60px auto 20px; text-align:center; font-size:12px; color
+  <div style="margin:60px auto 20px; text-align:center; font-size:12px; color:#aaa;">
+    Admin only → 
+    <button onclick="openAdminPanel()" 
+            style="background:#c0392b; color:white; padding:6px 10px; border:none; border-radius:4px; font-size:11px;">
+      Undo a gift (password required)
+    </button>
+  </div>
+
+  <!-- Admin Panel Modal -->
+  <div id="admin-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:400px;">
+      <h3 style="color:#c0392b;">Admin: Undo Gift</h3>
+      <p>Enter password:</p>
+      <input type="password" id="admin-pass" placeholder="Password" style="width:100%; padding:8px; margin:10px 0;" />
+      <p>Select gift to make available again:</p>
+      <select id="gift-to-reset" style="width:100%; padding:8px; margin:10px 0;"></select>
+      <div style="margin-top:15px;">
+        <button onclick="performReset()" style="background:#27ae60; color:white; padding:8px 16px; border:none; border-radius:4px;">Confirm Undo</button>
+        <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-left:10px; background:#95a5a6; color:white; padding:8px 16px; border:none; border-radius:4px;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+  <script>
+    // Admin panel functions
+    function openAdminPanel() {
+      const pass = prompt("Admin password?", "");
+      if (pass !== "0411") {
+        alert("Wrong password!");
+        return;
+      }
+
+      // Populate dropdown with only CLAIMED gifts
+      const claimedGifts = gifts.filter(g => g.claimed);
+      const select = document.getElementById("gift-to-reset");
+      select.innerHTML = '<option value="">-- Choose gift to undo --</option>';
+      
+      claimedGifts.forEach(g => {
+        const opt = document.createElement("option");
+        opt.value = g.id;
+        opt.textContent = `${g.name} (gifted by ${g.claimedBy})`;
+        select.appendChild(opt);
+      });
+
+      if (claimedGifts.length === 0) {
+        alert("No gifts are claimed yet!");
+        return;
+      }
+
+      document.getElementById("admin-modal").style.display = "flex";
+    }
+
+    function performReset() {
+      const pass = document.getElementById("admin-pass").value;
+      if (pass !== "0411") {
+        alert("Wrong password!");
+        return;
+      }
+
+      const giftId = parseInt(document.getElementById("gift-to-reset").value);
+      if (!giftId) {
+        alert("Please select a gift");
+        return;
+      }
+
+      const gift = gifts.find(g => g.id === giftId);
+      if (gift) {
+        gift.claimed = false;
+        gift.claimedBy = "";
+        saveToStorage();
+        render();
+        alert(`${gift.name} is now available again!`);
+        document.getElementById("admin-modal").style.display = "none";
+      }
+    }
+
+    // Close admin modal when clicking outside
+    window.onclick = function(e) {
+      const adminModal = document.getElementById("admin-modal");
+      const claimModal = document.getElementById("modal");
+      if (e.target === adminModal) adminModal.style.display = "none";
+      if (e.target === claimModal) claimModal.style.display = "none";
+    }
+  </script>
+</body>
+</html>
