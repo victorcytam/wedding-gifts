@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Shiba Inu",
+    "name": "Dog",
     "price": 3280,
     "photo": "dog.jpg",
     "claimed": false,
