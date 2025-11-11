@@ -3,16 +3,28 @@
     "id": 1,
     "name": "Dog",
     "price": 3280,
-    "photo": "dog.jpg",
-    "claimed": false,
-    "claimedBy": ""
+    "photo": "images/dog.jpg",
+    "isRedPocket": false
   },
   {
     "id": 2,
     "name": "Dyson Airwrap",
     "price": 4480,
     "photo": "images/gift2.jpg",
-    "claimed": false,
-    "claimedBy": ""
+    "isRedPocket": false
+  },
+  {
+    "id": 88,
+    "name": "♡ Red Pocket 利是 ♡ (Any amount welcome)",
+    "price": "Any amount",
+    "photo": "images/redpocket.jpg",
+    "isRedPocket": true
+  },
+  {
+    "id": 89,
+    "name": "♡ 愛心利是 ♡ 隨心祝福",
+    "price": "隨心",
+    "photo": "images/redpocket2.jpg",
+    "isRedPocket": true
   }
 ]
