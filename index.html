@@ -3,120 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Our Wedding Gift Registry</title>
+  <title>Hannah & Victor's Wedding Gift Registry</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Mobile-first beautiful design */
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+      background: linear-gradient(to bottom, #fffaf0, #fdf2e9); 
+      margin:0; padding:0; min-height:100vh; 
+    }
+    .container { 
+      max-width: 100%; 
+      margin: 0 auto; 
+      padding: 20px 15px; 
+    }
+    h1 { 
+      text-align:center; 
+      color:#c0392b; 
+      font-size:28px; 
+      margin:20px 0 10px;
+      font-weight:600;
+    }
+    .subtitle {
+      text-align:center; 
+      color:#e74c3c; 
+      font-size:18px; 
+      margin-bottom:25px;
+    }
+    .thanks {
+      background:#fff; 
+      padding:20px; 
+      border-radius:15px; 
+      box-shadow:0 8px 25px rgba(0,0,0,0.08); 
+      margin:20px 0; 
+      text-align:center; 
+      line-height:1.8;
+      font-size:16px;
+      color:#2c3e50;
+    }
+    .thanks strong { color:#c0392b; font-size:19px; }
+    .gift { 
+      border-radius:15px; 
+      padding:18px; 
+      margin:18px 0; 
+      display:flex; 
+      align-items:center; 
+      background:#fff; 
+      box-shadow:0 6px 20px rgba(0,0,0,0.08);
+      transition:transform 0.2s;
+    }
+    .gift:active { transform:scale(0.98); }
+    .gift img { 
+      width:90px; height:90px; object-fit:cover; border-radius:12px; margin-right:16px; 
+    }
+    .gift .info { flex:1; }
+    .gift .price { 
+      font-weight:bold; color:#27ae60; font-size:18px; 
+    }
+    .gift button { 
+      background:#e74c3c; color:white; border:none; padding:12px 20px; 
+      border-radius:50px; cursor:pointer; font-size:15px; font-weight:500;
+    }
+    .gift button:hover, .gift button:active { background:#c0392b; }
+    .modal-content { border-radius:18px; padding:25px; }
+    .qr { width:200px; margin:20px auto; border:8px solid #fff; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.1); }
+    #confirm-btn { background:#27ae60; padding:14px 30px; border-radius:50px; font-size:16px; }
+    .admin-btn {
+      margin:60px auto 30px; text-align:center; 
+    }
+    .admin-btn button {
+      background:#34495e; padding:10px 16px; border-radius:50px; font-size:12px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Our Wedding Gift Registry</h1>
-    <p>Thank you for celebrating with us! Choose a gift, scan the FPS QR code, and let us know your name.</p>
+    <h1>Hannah & Victor</h1>
+    <div class="subtitle">2026 Wedding Gift Registry</div>
 
-    <h2>Available Gifts</h2>
+    <div class="thanks">
+      <strong>Dear family and friends,</strong><br><br>
+      Thank you so much for being part of our big day! 感謝你們來到我們人生中最重要的一天！<br>
+      Your presence is already the greatest gift, but if you would like to bless us further, 
+      here are some items we truly love and need for our new home.<br><br>
+      多謝你哋嘅支持同祝福，真係好感動！有你哋在場已經係最好嘅禮物～<br>
+      如蒙厚愛，呢度有啲我哋好鍾意又實用嘅心水禮物，隨心選擇即可 ♡
+    </div>
+
+    <h2 style="color:#e74c3c; text-align:center; margin:35px 0 20px;">Available Gifts</h2>
     <div id="available"></div>
 
-    <h2>Gifted</h2>
+    <h2 style="color:#27ae60; text-align:center; margin:40px 0 20px;">Already Gifted</h2>
     <div id="gifted"></div>
 
-    <!-- Modal for claiming -->
+    <!-- Claim Modal -->
     <div id="modal" class="modal">
       <div class="modal-content">
         <span class="close">×</span>
         <img id="modal-img" src="" alt="" />
-        <h3 id="modal-name"></h3>
-        <p>HK$ <span id="modal-price"></span></p>
-        <p>Scan to pay via FPS:</p>
+        <h3 id="modal-name" style="margin:15px 0 8px;"></h3>
+        <p style="font-size:20px; color:#27ae60;">HK$ <span id="modal-price"></span></p>
+        <p style="margin:20px 0; color:#7f8c8d;">Please pay via FPS then enter your name below</p>
         <img src="images/qr-fps.png" alt="FPS QR" class="qr" />
-        <input type="text" id="claimer-name" placeholder="Your name" required />
-        <button id="confirm-btn">I’ve paid – claim gift</button>
+        <input type="text" id="claimer-name" placeholder="Your name 你的名字" required style="width:100%; padding:14px; margin:15px 0; border-radius:50px; border:1px solid #ddd; text-align:center; font-size:16px;" />
+        <button id="confirm-btn">I've Paid – Claim This Gift</button>
       </div>
     </div>
-  </div>
 
-  <!-- ADMIN RESET BUTTON (only you know it exists) -->
-  <div style="margin:60px auto 20px; text-align:center; font-size:12px; color:#aaa;">
-    Admin only → 
-    <button onclick="openAdminPanel()" 
-            style="background:#c0392b; color:white; padding:6px 10px; border:none; border-radius:4px; font-size:11px;">
-      Undo a gift (password required)
-    </button>
-  </div>
+    <!-- Admin Undo Button (only you know) -->
+    <div class="admin-btn">
+      <button onclick="openAdminPanel()">Undo a gift (admin only)</button>
+    </div>
 
-  <!-- Admin Panel Modal -->
-  <div id="admin-modal" class="modal" style="display:none;">
-    <div class="modal-content" style="max-width:400px;">
-      <h3 style="color:#c0392b;">Admin: Undo Gift</h3>
-      <p>Enter password:</p>
-      <input type="password" id="admin-pass" placeholder="Password" style="width:100%; padding:8px; margin:10px 0;" />
-      <p>Select gift to make available again:</p>
-      <select id="gift-to-reset" style="width:100%; padding:8px; margin:10px 0;"></select>
-      <div style="margin-top:15px;">
-        <button onclick="performReset()" style="background:#27ae60; color:white; padding:8px 16px; border:none; border-radius:4px;">Confirm Undo</button>
-        <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-left:10px; background:#95a5a6; color:white; padding:8px 16px; border:none; border-radius:4px;">Cancel</button>
+    <!-- Admin Panel Modal -->
+    <div id="admin-modal" class="modal" style="display:none;">
+      <div class="modal-content" style="max-width:400px;">
+        <h3 style="color:#c0392b;">Admin: Undo Gift</h3>
+        <p>Password:</p>
+        <input type="password" id="admin-pass" placeholder="Enter password" style="width:100%; padding:12px; margin:10px 0; border-radius:50px; text-align:center;" />
+        <p>Select gift to make available again:</p>
+        <select id="gift-to-reset" style="width:100%; padding:12px; margin:15px 0; border-radius:50px;"></select>
+        <div style="margin-top:20px;">
+          <button onclick="performReset()" style="background:#27ae60; padding:12px 24px; border-radius:50px;">Confirm Undo</button>
+          <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-left:10px; background:#95a5a6; padding:12px 20px; border-radius:50px;">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="script.js"></script>
-
   <script>
-    // Admin panel functions
+    // Same admin functions as before
     function openAdminPanel() {
       const pass = prompt("Admin password?", "");
-      if (pass !== "0411") {
-        alert("Wrong password!");
-        return;
-      }
-
-      // Populate dropdown with only CLAIMED gifts
-      const claimedGifts = gifts.filter(g => g.claimed);
-      const select = document.getElementById("gift-to-reset");
-      select.innerHTML = '<option value="">-- Choose gift to undo --</option>';
-      
-      claimedGifts.forEach(g => {
-        const opt = document.createElement("option");
-        opt.value = g.id;
-        opt.textContent = `${g.name} (gifted by ${g.claimedBy})`;
-        select.appendChild(opt);
+      if (pass !== "0411") return alert("Wrong password!");
+      const claimed = gifts.filter(g => g.claimed);
+      const sel = document.getElementById("gift-to-reset");
+      sel.innerHTML = '<option value="">-- Select gift to undo --</option>';
+      claimed.forEach(g => {
+        const opt = new Option(`${g.name} — ${g.claimedBy}`, g.id);
+        sel.add(opt);
       });
-
-      if (claimedGifts.length === 0) {
-        alert("No gifts are claimed yet!");
-        return;
-      }
-
+      if (claimed.length === 0) return alert("No gifts claimed yet!");
       document.getElementById("admin-modal").style.display = "flex";
     }
 
     function performReset() {
-      const pass = document.getElementById("admin-pass").value;
-      if (pass !== "0411") {
-        alert("Wrong password!");
-        return;
-      }
-
-      const giftId = parseInt(document.getElementById("gift-to-reset").value);
-      if (!giftId) {
-        alert("Please select a gift");
-        return;
-      }
-
-      const gift = gifts.find(g => g.id === giftId);
-      if (gift) {
-        gift.claimed = false;
-        gift.claimedBy = "";
-        saveToStorage();
-        render();
-        alert(`${gift.name} is now available again!`);
-        document.getElementById("admin-modal").style.display = "none";
-      }
+      if (document.getElementById("admin-pass").value !== "0411") return alert("Wrong password!");
+      const id = parseInt(document.getElementById("gift-to-reset").value);
+      if (!id) return alert("Please select a gift");
+      const gift = gifts.find(g => g.id === id);
+      gift.claimed = false; gift.claimedBy = "";
+      saveToStorage(); render();
+      alert(`${gift.name} is now available again!`);
+      document.getElementById("admin-modal").style.display = "none";
     }
 
-    // Close admin modal when clicking outside
-    window.onclick = function(e) {
-      const adminModal = document.getElementById("admin-modal");
-      const claimModal = document.getElementById("modal");
-      if (e.target === adminModal) adminModal.style.display = "none";
-      if (e.target === claimModal) claimModal.style.display = "none";
+    window.onclick = e => {
+      if (e.target.classList.contains('modal')) e.target.style.display = 'none';
     }
   </script>
 </body>
