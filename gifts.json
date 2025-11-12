@@ -1,30 +1,58 @@
 [
   {
+    "id": 0,
+    "name": "Red Pocket 利是 (Any amount)",
+    "price": "Any amount",
+    "photo": "images/redpocket.jpg",
+    "isRedPocket": true,
+    "details": "隨心利是 ♡ 任何金額都好感動！\n\nYour love and blessings mean the world to us. Every dollar helps build our future home. 錢多錢少都係心意！每一分都係你哋對我哋嘅愛"
+  },
+  {
     "id": 1,
-    "name": "Dog",
+    "name": "KitchenAid Stand Mixer",
     "price": 3280,
-    "photo": "images/dog.jpg",
-    "isRedPocket": false
+    "photo": "images/gift1.jpg",
+    "isRedPocket": false,
+    "details": "KitchenAid 5KSM175 Stand Mixer – Arctic White\n\nPerfect for baking our future cakes together! From wedding cakes to daily bread, this will be the heart of our kitchen. 呢部係我哋夢想中嘅廚房靈魂！由婚禮蛋糕到每日麵包，都靠佢啦"
   },
   {
     "id": 2,
     "name": "Dyson Airwrap",
     "price": 4480,
     "photo": "images/gift2.jpg",
-    "isRedPocket": false
+    "isRedPocket": false,
+    "details": "Dyson Airwrap Complete Long – Prussian Blue\n\nFor Hannah’s long, beautiful hair. No heat damage, just effortless curls every morning. 專為Hannah嘅長髮設計！每日醒來都係女神頭，無損傷造型"
+  },
+  {
+    "id": 3,
+    "name": "Le Creuset Cast Iron Pot (26cm)",
+    "price": 2980,
+    "photo": "images/gift3.jpg",
+    "isRedPocket": false,
+    "details": "Le Creuset Signature Round Dutch Oven – Cerise Red\n\nOur first pot for family dinners, soups, and Sunday roasts. Will last a lifetime, just like our love. 紅色代表愛情！呢個煲會陪我哋煮第一餐、第一百餐、第一千餐"
+  },
+  {
+    "id": 4,
+    "name": "Nespresso Vertuo Next",
+    "price": 1680,
+    "photo": "images/gift4.jpg",
+    "isRedPocket": false,
+    "details": "Nespresso Vertuo Next Coffee Machine – Matte Black\n\nFor our lazy Sunday mornings in bed with coffee and kisses. 星期日朝早，咖啡香＋你嘅吻＝完美開始"
+  },
+  {
+    "id": 5,
+    "name": "SMEG Retro Kettle",
+    "price": 1280,
+    "photo": "images/gift5.jpg",
+    "isRedPocket": false,
+    "details": "SMEG 50's Retro Electric Kettle – Cream\n\nBoiling water for tea, congee, and midnight snacks. Cute and practical, just like us! 又靚又實用，仲有復古feel～每日都想用"
   },
   {
     "id": 88,
-    "name": "♡ Red Pocket 利是 ♡ (Any amount welcome)",
-    "price": "Any amount",
-    "photo": "images/redpocket.jpg",
-    "isRedPocket": true
+    "name": "Dog",
+    "price": "$10000",
+    "photo": "images/dog.jpg",
+    "isRedPocket": true,
+    "details": "隨心利是 ♡ 任何金額都好感動！\n\nYour love and blessings mean the world to us. Every dollar helps build our future home. 錢多錢少都係心意！每一分都係你哋對我哋嘅愛"
   },
-  {
-    "id": 89,
-    "name": "♡ 愛心利是 ♡ 隨心祝福",
-    "price": "隨心",
-    "photo": "images/redpocket2.jpg",
-    "isRedPocket": true
-  }
 ]
