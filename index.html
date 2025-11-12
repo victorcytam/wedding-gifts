@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hannah & Victor's Wedding ♡ 22.11.2025</title>
+  <title>Hannah & Victor ♡ 22.11.2025</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     * { box-sizing: border-box; }
@@ -40,9 +40,13 @@
 
     .redpocket { border: 3px solid #e74c3c !important; background: linear-gradient(135deg, #fff9f9, #fff3f3) !important; }
 
-    .modal-content { border-radius:22px; padding:28px; max-width:90%; }
-    .qr { width:220px; margin:20px auto; border:10px solid #fff; border-radius:15px; box-shadow:0 6px 20px rgba(0,0,0,0.15); }
-    #confirm-btn { background:#27ae60; padding:15px 32px; border-radius:50px; font-size:17px; }
+    .modal-content { border-radius:22px; padding:28px; max-width:90%; text-align:center; }
+    .qr { width:240px; margin:25px auto; border:10px solid #fff; border-radius:18px; box-shadow:0 6px 25px rgba(0,0,0,0.15); display:none; }
+    .qr.active { display:block; }
+    .payment-btns { display:flex; gap:15px; justify-content:center; margin:20px 0; }
+    .btn-fps { background:#1e90ff; color:white; padding:14px 28px; border-radius:50px; font-size:16px; border:none; flex:1; }
+    .btn-payme { background:#e74c3c; color:white; padding:14px 28px; border-radius:50px; font-size:16px; border:none; flex:1; }
+    #confirm-btn { background:#27ae60; padding:15px 32px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; }
 
     .admin-btn { margin:70px auto 40px; text-align:center; }
     .admin-btn button { background:#2c3e50; padding:11px 18px; border-radius:50px; font-size:12px; }
@@ -51,13 +55,13 @@
 <body>
   <div class="container">
     <h1>Hannah & Victor</h1>
-    <div class="date">22 November 2025 ♡</div>
+    <div class="date">22 November 2025</div>
 
     <div class="thanks">
       <strong>親愛的家人朋友，</strong><br><br>
       感謝你們來到我們人生中最重要的一天！有你哋在場已經係最好嘅禮物～<br><br>
       Your presence is the greatest blessing. 如果你哋想再送上祝福，<br>
-      以下係我哋用心準備嘅禮物清單同利是選項，隨心選擇即可 ♡<br><br>
+      以下係我哋用心準備嘅禮物清單同利是選項，隨心選擇即可<br><br>
       多謝你哋嘅愛心同支持，真係好感動！感恩有你哋！
     </div>
 
@@ -71,18 +75,24 @@
     <div id="modal" class="modal">
       <div class="modal-content">
         <span class="close">×</span>
-        <img id="modal-img" src="" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:15px;" />
-        <h3 id="modal-name" style="margin:18px 0 10px; font-size:20px;"></h3>
-        <p style="font-size:21px; color:#27ae60; margin:10px 0;">
+        <img id="modal-img" src="" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:15px;margin-bottom:15px;" />
+        <h3 id="modal-name" style="margin:15px 0 8px; font-size:20px;"></h3>
+        <p id="modal-details" style="color:#555; margin:15px 0; line-height:1.6; font-size:15px;"></p>
+        <p style="font-size:21px; color:#27ae60; margin:15px 0;">
           <span id="modal-price"></span>
         </p>
-        <p style="margin:20px 0; color:#7f8c8d; font-size:15px;">
-          Please pay via FPS → then enter your name ♡
-        </p>
-        <img src="images/qr-fps.png" alt="FPS QR" class="qr" />
+
+        <div class="payment-btns">
+          <button class="btn-fps" onclick="showQR('fps')">FPS</button>
+          <button class="btn-payme" onclick="showQR('payme')">PayMe</button>
+        </div>
+
+        <img id="qr-fps" src="images/qr-fps.png" alt="FPS QR" class="qr" />
+        <img id="qr-payme" src="images/qr-payme.png" alt="PayMe QR" class="qr" />
+
         <input type="text" id="claimer-name" placeholder="Your name 你的名字" required 
-               style="width:100%; padding:16px; margin:18px 0; border-radius:50px; border:1px solid #ddd; text-align:center; font-size:17px;" />
-        <button id="confirm-btn">I've Paid – Claim This Gift</button>
+               style="width:100%; padding:16px; margin:20px 0 10px; border-radius:50px; border:1px solid #ddd; text-align:center; font-size:17px;" />
+        <button id="confirm-btn">I've Paid – Record My Gift</button>
       </div>
     </div>
 
@@ -109,131 +119,36 @@
 
   <script src="script.js"></script>
   <script>
-    let gifts = [];
-    let claimedHistory = JSON.parse(localStorage.getItem('weddingGifts_v2') || '{}');
-
-    fetch('gifts.json')
-      .then(r => r.json())
-      .then(data => {
-        gifts = data;
-        loadClaims();
-        render();
-      });
-
-    function loadClaims() {
-      gifts.forEach(g => {
-        if (!g.isRedPocket && claimedHistory[g.id]) {
-          g.claimed = true;
-          g.claimedBy = claimedHistory[g.id];
-        }
-      });
+    function showQR(type) {
+      document.getElementById('qr-fps').classList.remove('active');
+      document.getElementById('qr-payme').classList.remove('active');
+      document.getElementById('qr-' + type).classList.add('active');
     }
 
-    function saveToStorage() {
-      const map = {};
-      gifts.forEach(g => {
-        if (!g.isRedPocket && g.claimed) map[g.id] = g.claimedBy;
-      });
-      localStorage.setItem('weddingGifts_v2', JSON.stringify(map));
-    }
-
-    function render() {
-      const available = gifts.filter(g => g.isRedPocket || !g.claimed);
-      const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && claimedHistory[g.id]));
-
-      document.getElementById('available').innerHTML = available.map(giftCard).join('');
-      document.getElementById('gifted').innerHTML     = gifted.map(giftedCard).join('');
-    }
-
-    function giftCard(g) {
-      const rpClass = g.isRedPocket ? 'gift redpocket' : 'gift';
-      const priceText = typeof g.price === 'number' ? `HK$ ${g.price}` : g.price;
-      return `
-        <div class="${rpClass}">
-          <img src="${g.photo}" alt="${g.name}" onerror="this.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGAo9W5xwAAAABJRU5ErkJggg=='">
-          <div class="info">
-            <strong>${g.name}</strong><br>
-            <span class="price">${priceText}</span>
-          </div>
-          <button onclick="openModal(${g.id})">${g.isRedPocket ? 'Send 利是 ♡' : "I'll give this"}</button>
-        </div>`;
-    }
-
-    function giftedCard(g) {
-      const by = claimedHistory[g.id] || g.claimedBy || 'Anonymous';
-      return `
-        <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
-          <img src="${g.photo}" alt="${g.name}">
-          <div class="info">
-            <strong>${g.name}</strong><br>
-            <em style="color:#27ae60;">♥ Gifted by ${by}</em>
-          </div>
-        </div>`;
-    }
-
-    let currentGift = null;
-    function openModal(id) {
+    // Update modal details
+    const originalOpenModal = openModal;
+    openModal = function(id) {
       currentGift = gifts.find(g => g.id === id);
-      if (!currentGift) return;
+      if (!currentGift || (!currentGift.isRedPocket && currentGift.claimed)) return;
 
       document.getElementById('modal-img').src = currentGift.photo;
       document.getElementById('modal-name').textContent = currentGift.name;
       document.getElementById('modal-price').textContent = 
         currentGift.isRedPocket ? 'Any amount ♡ 隨意金額' : 'HK$ ' + currentGift.price;
+
+      // Custom details per gift (add more in gifts.json if you want)
+      const details = {
+        1: "KitchenAid 5KSM175 Stand Mixer – Arctic White. Perfect for baking our future cakes!",
+        2: "Dyson Airwrap Complete Long – Prussian Blue. For Hannah’s long hair dreams!",
+        88: "Any amount is deeply appreciated! Your love means the world to us.",
+        89: "隨心利是，祝福我哋新婚快樂，甜蜜到白頭！"
+      };
+      document.getElementById('modal-details').textContent = details[id] || "Thank you for your kindness!";
+
       document.getElementById('claimer-name').value = '';
+      showQR('fps'); // default to FPS
       document.getElementById('modal').style.display = 'flex';
-    }
-
-    document.querySelector('.close').onclick = () => document.getElementById('modal').style.display = 'none';
-
-    document.getElementById('confirm-btn').onclick = () => {
-      const name = document.getElementById('claimer-name').value.trim();
-      if (!name) return alert('Please enter your name ♡');
-
-      if (!currentGift.isRedPocket) {
-        currentGift.claimed = true;
-        currentGift.claimedBy = name;
-      }
-      claimedHistory[currentGift.id] = name;
-      saveToStorage();
-      render();
-      document.getElementById('modal').style.display = 'none';
-      alert(`Thank you ${name} ♡ Your blessing has been recorded!`);
     };
-
-    // Admin functions
-    function openAdminPanel() {
-      const pass = prompt("Admin password?", "");
-      if (pass !== "0411") return alert("Wrong password!");
-      const select = document.getElementById("gift-to-reset");
-      select.innerHTML = '<option value="">-- Select gift to undo --</option>';
-      Object.keys(claimedHistory).forEach(id => {
-        const g = gifts.find(x => x.id == id);
-        if (g) {
-          const opt = new Option(`${g.name} — ${claimedHistory[id]}`, id);
-          select.add(opt);
-        }
-      });
-      if (select.options.length === 1) return alert("No gifts to undo yet!");
-      document.getElementById("admin-modal").style.display = "flex";
-    }
-
-    function performReset() {
-      if (document.getElementById("admin-pass").value !== "0411") return alert("Wrong password!");
-      const id = document.getElementById("gift-to-reset").value;
-      if (!id) return alert("Please select a gift");
-      delete claimedHistory[id];
-      const g = gifts.find(x => x.id == id);
-      if (g && !g.isRedPocket) { g.claimed = false; g.claimedBy = ""; }
-      saveToStorage();
-      render();
-      alert("Gift undone successfully!");
-      document.getElementById("admin-modal").style.display = "none";
-    }
-
-    window.onclick = e => {
-      if (e.target.classList.contains('modal')) e.target.style.display = 'none';
-    }
   </script>
 </body>
 </html>
