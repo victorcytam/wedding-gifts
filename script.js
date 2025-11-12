@@ -128,9 +128,15 @@ function toggleQR(type) {
   const qr = document.getElementById('qr-' + type);
   const isActive = qr.classList.contains('active');
   
+  // Hide all QRs and link
   document.querySelectorAll('.qr').forEach(q => q.classList.remove('active'));
+  document.getElementById('payme-link').style.display = 'none';
+  
   if (!isActive) {
     qr.classList.add('active');
+    if (type === 'payme') {
+      document.getElementById('payme-link').style.display = 'block';
+    }
   }
 }
 
