@@ -8,24 +8,25 @@ const firebaseConfig = {
 let gifts = [];
 let claimedData = {};
 
-// Load gifts
+// Load gifts.json
 fetch('gifts.json')
   .then(r => r.json())
   .then(data => {
     gifts = data;
-    
-    // Load Firebase script
-    const script = document.createElement('script');
-    script.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js";
-    script.onload = () => loadFirebaseSDKs();
-    document.head.appendChild(script);
+    loadFirebase();
   });
 
-function loadFirebaseSDKs() {
-  const dbScript = document.createElement('script');
-  dbScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js";
-  dbScript.onload = initFirebase;
-  document.head.appendChild(dbScript);
+// Load Firebase SDKs
+function loadFirebase() {
+  const appScript = document.createElement('script');
+  appScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js";
+  appScript.onload = () => {
+    const dbScript = document.createElement('script');
+    dbScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js";
+    dbScript.onload = initFirebase;
+    document.head.appendChild(dbScript);
+  };
+  document.head.appendChild(appScript);
 }
 
 function initFirebase() {
@@ -33,20 +34,19 @@ function initFirebase() {
   const db = firebase.database();
   const ref = db.ref('weddingGifts');
 
-  // Listen for real-time updates
   ref.on('value', (snapshot) => {
     claimedData = snapshot.val() || {};
     applyClaimsAndRender();
   });
-
-  // Initial render will happen after first sync
 }
 
 function applyClaimsAndRender() {
   gifts.forEach(g => {
     if (!g.isRedPocket && claimedData[g.id]) {
       g.claimed = true;
-      g.claimedBy = claimedData[g.id];
+      g.claimedBy = claimedData[g.id].name;
+      g.blessing = claimedData[g.id].blessing;
+      g.payment = claimedData[g.id].payment;
     } else if (!g.isRedPocket) {
       g.claimed = false;
       g.claimedBy = "";
@@ -55,7 +55,6 @@ function applyClaimsAndRender() {
   render();
 }
 
-// Render function (same as before)
 function render() {
   const available = gifts.filter(g => g.isRedPocket || !g.claimed);
   const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && claimedData[g.id]));
@@ -74,20 +73,21 @@ function giftCard(g) {
         <strong>${g.name}</strong><br>
         <span class="price">${priceText}</span>
       </div>
-      <button onclick="openModal(${g.id})">${g.isRedPocket ? 'Send 利是 ♡' : "I'll give this"}</button>
+      <button onclick="openModal(${g.id})">${g.isRedPocket ? 'Send 利是' : "I'll give this"}</button>
     </div>`;
 }
 
 function giftedCard(g) {
-  const data = claimedData[g.id] || {};
-  const by = data.name || 'Someone';
-  const blessing = data.blessing && data.blessing !== "No message" ? ` — “${data.blessing}”` : '';
+  const record = claimedData[g.id] || {};
+  const name = record.name || 'Someone';
+  const blessing = record.blessing && record.blessing !== "No message" ? `<br><em style="font-size:14px; color:#e74c3c;">“${record.blessing}”</em>` : '';
+  const payment = record.payment ? ` via ${record.payment}` : '';
   return `
     <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
       <img src="${g.photo}" alt="${g.name}">
       <div class="info">
         <strong>${g.name}</strong><br>
-        <em style="color:#27ae60;">♥ Gifted by ${by}${blessing}</em>
+        <em style="color:#27ae60;">Gifted by ${name}${payment}${blessing}</em>
       </div>
     </div>`;
 }
@@ -97,33 +97,73 @@ function openModal(id) {
   currentGift = gifts.find(g => g.id === id);
   if (!currentGift || (!currentGift.isRedPocket && currentGift.claimed)) return;
 
+  // Reset modal
+  document.getElementById('step-details').style.display = 'block';
+  document.getElementById('step-payment').style.display = 'none';
+  document.querySelectorAll('.qr').forEach(q => q.classList.remove('active'));
+  document.getElementById('claimer-name').value = '';
+  document.getElementById('blessing').value = '';
+
+  // Fill details
   document.getElementById('modal-img').src = currentGift.photo;
   document.getElementById('modal-name').textContent = currentGift.name;
   document.getElementById('modal-price').textContent = 
-    currentGift.isRedPocket ? 'Any amount ♡ 隨意金額' : 'HK$ ' + currentGift.price;
-  document.getElementById('claimer-name').value = '';
+    currentGift.isRedPocket ? 'Any amount 隨意金額' : 'HK$ ' + currentGift.price;
+  document.getElementById('modal-details').textContent = currentGift.details || "Thank you for your love!";
+
   document.getElementById('modal').style.display = 'flex';
 }
 
-document.querySelector('.close').onclick = () => document.getElementById('modal').style.display = 'none';
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
 
-document.getElementById('confirm-btn').onclick = () => {
+function showPaymentStep() {
+  document.getElementById('step-details').style.display = 'none';
+  document.getElementById('step-payment').style.display = 'block';
+}
+
+function backToDetails() {
+  document.getElementById('step-payment').style.display = 'none';
+  document.getElementById('step-details').style.display = 'block';
+}
+
+function toggleQR(type) {
+  const qr = document.getElementById('qr-' + type);
+  const isActive = qr.classList.contains('active');
+  
+  document.querySelectorAll('.qr').forEach(q => q.classList.remove('active'));
+  if (!isActive) {
+    qr.classList.add('active');
+  }
+}
+
+function confirmGift() {
   const name = document.getElementById('claimer-name').value.trim();
-  if (!name) return alert('Please enter your name ♡');
+  const blessing = document.getElementById('blessing').value.trim();
+  const activeQR = document.querySelector('.qr.active');
+  if (!name) return alert('Please enter your name');
+  if (!activeQR) return alert('Please select FPS or PayMe');
+
+  const payment = activeQR.id === 'qr-fps' ? 'FPS' : 'PayMe';
 
   const db = firebase.database();
-  const updates = {};
-  updates[currentGift.id] = name;
+  const data = { 
+    name, 
+    blessing: blessing || "No message", 
+    payment, 
+    timestamp: Date.now() 
+  };
 
-  db.ref('weddingGifts').update(updates)
+  db.ref('weddingGifts/' + currentGift.id).set(data)
     .then(() => {
-      alert(`Thank you ${name} ♡ Everyone can now see your blessing!`);
-      document.getElementById('modal').style.display = 'none';
+      alert(`Thank you ${name}! Your blessing is recorded.`);
+      closeModal();
     })
     .catch(() => alert('Network error, please try again'));
-};
+}
 
-// Admin undo still works (password 0411)
+// === ADMIN PANEL ===
 function openAdminPanel() {
   const pass = prompt("Admin password?", "");
   if (pass !== "0411") return alert("Wrong password!");
@@ -134,7 +174,8 @@ function openAdminPanel() {
   Object.keys(claimedData).forEach(id => {
     const g = gifts.find(x => x.id == id);
     if (g) {
-      const opt = new Option(`${g.name} — ${claimedData[id]}`, id);
+      const record = claimedData[id];
+      const opt = new Option(`${g.name} — ${record.name} (${record.payment})`, id);
       select.add(opt);
     }
   });
@@ -150,11 +191,15 @@ function performReset() {
   
   firebase.database().ref('weddingGifts/' + id).remove()
     .then(() => {
-      alert("Gift removed successfully!");
+      alert("Gift undone successfully!");
       document.getElementById("admin-modal").style.display = "none";
-    });
+    })
+    .catch(() => alert("Error undoing gift"));
 }
 
 window.onclick = e => {
-  if (e.target.classList.contains('modal')) e.target.style.display = 'none';
-}
+  const modal = document.getElementById('modal');
+  const admin = document.getElementById('admin-modal');
+  if (e.target === modal) closeModal();
+  if (e.target === admin) admin.style.display = 'none';
+};
