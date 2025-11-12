@@ -205,6 +205,16 @@ function zoomImage(src) {
   document.getElementById('zoom-modal').style.display = 'flex';
 }
 
+function closeZoom() {
+  document.getElementById('zoom-modal').style.display = 'none';
+}
+
+// Close zoom when clicking outside image
+document.getElementById('zoom-modal').onclick = function(e) {
+  if (e.target === this) closeZoom();
+};
+
+
 // Make gift image in modal clickable
 document.getElementById('modal-img').onclick = function() {
   zoomImage(this.src);
