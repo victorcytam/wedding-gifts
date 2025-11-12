@@ -1,11 +1,11 @@
 [
   {
     "id": 1,
-    "name": "KitchenAid Stand Mixer",
-    "price": 3280,
-    "photo": "images/gift1.jpg",
+    "name": "Rice Cooker",
+    "price": 2370,
+    "photo": "images/rice.jpeg",
     "isRedPocket": false,
-    "details": "KitchenAid 5KSM175 Stand Mixer – Arctic White\n\nPerfect for baking our future cakes together! From wedding cakes to daily bread, this will be the heart of our kitchen. 呢部係我哋夢想中嘅廚房靈魂！由婚禮蛋糕到每日麵包，都靠佢啦"
+    "details": "Toshiba RC-DR10T(W) 1L IH Rice Cooker"
   },
   {
     "id": 2,
