@@ -199,6 +199,17 @@ function performReset() {
     .catch(() => alert("Error undoing gift"));
 }
 
+// Zoom image in modal
+function zoomImage(src) {
+  document.getElementById('zoomed-img').src = src;
+  document.getElementById('zoom-modal').style.display = 'flex';
+}
+
+// Make gift image in modal clickable
+document.getElementById('modal-img').onclick = function() {
+  zoomImage(this.src);
+};
+
 window.onclick = e => {
   const modal = document.getElementById('modal');
   const admin = document.getElementById('admin-modal');
