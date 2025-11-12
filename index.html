@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hannah & Victor 22.11.2025</title>
   <link rel="stylesheet" href="style.css" />
+      <!-- Social Preview & Favicon -->
+      <link rel="icon" href="images/favicon.png" type="image/png" sizes="32x32">
+      <link rel="apple-touch-icon" href="images/favicon.png">
+      
+      <!-- Open Graph / Social Media -->
+      <meta property="og:title" content="Hannah & Victor's Wedding Gift Registry">
+      <meta property="og:description" content="22 Nov 2025 ♡ Choose a gift or send a red pocket!">
+      <meta property="og:image" content="https://victorcytam.github.io/wedding-gifts/images/preview.png">
+      <meta property="og:url" content="https://victorcytam.github.io/wedding-gifts/">
+      <meta property="og:type" content="website">
+      
+      <!-- Twitter -->
+      <meta name="twitter:card" content="summary_large_image">
+ 
   <style>
     * { box-sizing: border-box; }
     body { 
@@ -85,6 +99,16 @@
     .admin-btn { margin:70px auto 40px; text-align:center; }
     .admin-btn button { background:#2c3e50; padding:11px 18px; border-radius:50px; font-size:12px; }
   </style>
+  <!-- IMAGE ZOOM MODAL -->
+<div id="zoom-modal" class="modal" style="display:none; padding:0; background:rgba(0,0,0,0.95);">
+  <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+    <img id="zoomed-img" src="" style="max-width:95%; max-height:95%; object-fit:contain; border-radius:12px;">
+    <span onclick="document.getElementById('zoom-modal').style.display='none'" 
+          style="position:absolute; top:20px; right:20px; font-size:32px; color:white; cursor:pointer; background:rgba(0,0,0,0.5); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;">
+      ×
+    </span>
+  </div>
+</div>
 </head>
 <body>
   <div class="container">
@@ -112,7 +136,7 @@
 
         <!-- STEP 1: Gift Details -->
         <div id="step-details">
-          <img id="modal-img" src="" alt="" />
+          <img id="modal-img" src="" alt="" style="cursor:zoom-in;" onclick="zoomImage(this.src)" />
           <h3 id="modal-name"></h3>
           <p id="modal-details" style="white-space:pre-line;"></p>
           <p style="font-size:21px; color:#27ae60; margin:15px 0;">
