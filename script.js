@@ -79,13 +79,15 @@ function giftCard(g) {
 }
 
 function giftedCard(g) {
-  const by = claimedData[g.id] || g.claimedBy || 'Someone';
+  const data = claimedData[g.id] || {};
+  const by = data.name || 'Someone';
+  const blessing = data.blessing && data.blessing !== "No message" ? ` — “${data.blessing}”` : '';
   return `
     <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
       <img src="${g.photo}" alt="${g.name}">
       <div class="info">
         <strong>${g.name}</strong><br>
-        <em style="color:#27ae60;">♥ Gifted by ${by}</em>
+        <em style="color:#27ae60;">♥ Gifted by ${by}${blessing}</em>
       </div>
     </div>`;
 }
