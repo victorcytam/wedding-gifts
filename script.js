@@ -78,16 +78,12 @@ function giftCard(g) {
 }
 
 function giftedCard(g) {
-  const record = claimedData[g.id] || {};
-  const name = record.name || 'Someone';
-  const blessing = record.blessing && record.blessing !== "No message" ? `<br><em style="font-size:14px; color:#e74c3c;">“${record.blessing}”</em>` : '';
-  const payment = record.payment ? ` via ${record.payment}` : '';
   return `
     <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
       <img src="${g.photo}" alt="${g.name}">
       <div class="info">
         <strong>${g.name}</strong><br>
-        <em style="color:#27ae60;">Gifted by ${name}${payment}${blessing}</em>
+        <em style="color:#27ae60;">Gifted</em>
       </div>
     </div>`;
 }
