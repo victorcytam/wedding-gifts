@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hannah & Victor ♡ 22.11.2025</title>
+  <title>Hannah & Victor 22.11.2025</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     * { box-sizing: border-box; }
@@ -40,13 +40,21 @@
 
     .redpocket { border: 3px solid #e74c3c !important; background: linear-gradient(135deg, #fff9f9, #fff3f3) !important; }
 
-    .modal-content { border-radius:22px; padding:28px; max-width:90%; text-align:center; }
-    .qr { width:240px; margin:25px auto; border:10px solid #fff; border-radius:18px; box-shadow:0 6px 25px rgba(0,0,0,0.15); display:none; }
+    .modal-content { border-radius:22px; padding:28px; max-width:90%; text-align:center; position:relative; }
+    .qr { width:240px; margin:20px auto; border:10px solid #fff; border-radius:18px; box-shadow:0 6px 25px rgba(0,0,0,0.15); display:none; }
     .qr.active { display:block; }
-    .payment-btns { display:flex; gap:15px; justify-content:center; margin:20px 0; }
+    .payment-btns { display:flex; gap:15px; justify-content:center; margin:20px 0; display:none; }
     .btn-fps { background:#1e90ff; color:white; padding:14px 28px; border-radius:50px; font-size:16px; border:none; flex:1; }
     .btn-payme { background:#e74c3c; color:white; padding:14px 28px; border-radius:50px; font-size:16px; border:none; flex:1; }
-    #confirm-btn { background:#27ae60; padding:15px 32px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; }
+    #confirm-btn { background:#27ae60; padding:15px 32px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; display:none; }
+
+    #proceed-btn { background:#9b59b6; color:white; padding:15px 32px; border-radius:50px; font-size:17px; width:100%; margin-top:25px; }
+
+    .input-group { display:none; margin-top:20px; }
+    .input-group input, .input-group textarea {
+      width:100%; padding:16px; margin:10px 0; border-radius:50px; border:1px solid #ddd; text-align:center; font-size:16px;
+    }
+    .input-group textarea { height:100px; resize:none; border-radius:20px; text-align:left; padding:16px; }
 
     .admin-btn { margin:70px auto 40px; text-align:center; }
     .admin-btn button { background:#2c3e50; padding:11px 18px; border-radius:50px; font-size:12px; }
@@ -77,12 +85,15 @@
         <span class="close">×</span>
         <img id="modal-img" src="" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:15px;margin-bottom:15px;" />
         <h3 id="modal-name" style="margin:15px 0 8px; font-size:20px;"></h3>
-        <p id="modal-details" style="color:#555; margin:15px 0; line-height:1.6; font-size:15px;"></p>
+        <p id="modal-details" style="color:#555; margin:15px 0; line-height:1.7; font-size:15px; white-space:pre-line;"></p>
         <p style="font-size:21px; color:#27ae60; margin:15px 0;">
           <span id="modal-price"></span>
         </p>
 
-        <div class="payment-btns">
+        <button id="proceed-btn" onclick="showPaymentOptions()">Proceed to Pay</button>
+
+        <!-- Hidden until Proceed -->
+        <div class="payment-btns" id="payment-btns">
           <button class="btn-fps" onclick="showQR('fps')">FPS</button>
           <button class="btn-payme" onclick="showQR('payme')">PayMe</button>
         </div>
@@ -90,9 +101,11 @@
         <img id="qr-fps" src="images/qr-fps.png" alt="FPS QR" class="qr" />
         <img id="qr-payme" src="images/qr-payme.png" alt="PayMe QR" class="qr" />
 
-        <input type="text" id="claimer-name" placeholder="Your name 你的名字" required 
-               style="width:100%; padding:16px; margin:20px 0 10px; border-radius:50px; border:1px solid #ddd; text-align:center; font-size:17px;" />
-        <button id="confirm-btn">I've Paid – Record My Gift</button>
+        <div class="input-group" id="input-group">
+          <input type="text" id="claimer-name" placeholder="Your name 你的名字" required />
+          <textarea id="blessing" placeholder="Leave a blessing for us... 留句祝福俾我哋..."></textarea>
+          <button id="confirm-btn">I've Paid – Record My Gift</button>
+        </div>
       </div>
     </div>
 
@@ -119,13 +132,20 @@
 
   <script src="script.js"></script>
   <script>
+    function showPaymentOptions() {
+      document.getElementById('proceed-btn').style.display = 'none';
+      document.getElementById('payment-btns').style.display = 'flex';
+      showQR('fps'); // default
+    }
+
     function showQR(type) {
       document.getElementById('qr-fps').classList.remove('active');
       document.getElementById('qr-payme').classList.remove('active');
       document.getElementById('qr-' + type).classList.add('active');
+      document.getElementById('input-group').style.display = 'block';
     }
 
-    // Update modal details
+    // Update modal with details
     const originalOpenModal = openModal;
     openModal = function(id) {
       currentGift = gifts.find(g => g.id === id);
@@ -134,20 +154,38 @@
       document.getElementById('modal-img').src = currentGift.photo;
       document.getElementById('modal-name').textContent = currentGift.name;
       document.getElementById('modal-price').textContent = 
-        currentGift.isRedPocket ? 'Any amount ♡ 隨意金額' : 'HK$ ' + currentGift.price;
+        currentGift.isRedPocket ? 'Any amount 隨意金額' : 'HK$ ' + currentGift.price;
+      document.getElementById('modal-details').textContent = currentGift.details || "Thank you for your love!";
 
-      // Custom details per gift (add more in gifts.json if you want)
-      const details = {
-        1: "KitchenAid 5KSM175 Stand Mixer – Arctic White. Perfect for baking our future cakes!",
-        2: "Dyson Airwrap Complete Long – Prussian Blue. For Hannah’s long hair dreams!",
-        88: "Any amount is deeply appreciated! Your love means the world to us.",
-        89: "隨心利是，祝福我哋新婚快樂，甜蜜到白頭！"
-      };
-      document.getElementById('modal-details').textContent = details[id] || "Thank you for your kindness!";
-
+      // Reset modal
+      document.getElementById('proceed-btn').style.display = 'block';
+      document.getElementById('payment-btns').style.display = 'none';
+      document.getElementById('input-group').style.display = 'none';
+      document.getElementById('qr-fps').classList.remove('active');
+      document.getElementById('qr-payme').classList.remove('active');
       document.getElementById('claimer-name').value = '';
-      showQR('fps'); // default to FPS
+      document.getElementById('blessing').value = '';
+
       document.getElementById('modal').style.display = 'flex';
+    };
+
+    // Confirm button now saves name + blessing
+    document.getElementById('confirm-btn').onclick = () => {
+      const name = document.getElementById('claimer-name').value.trim();
+      const blessing = document.getElementById('blessing').value.trim();
+      if (!name) return alert('Please enter your name');
+
+      const db = firebase.database();
+      const data = { name, blessing: blessing || "No message" };
+      const updates = {};
+      updates[currentGift.id] = data;
+
+      db.ref('weddingGifts').update(updates)
+        .then(() => {
+          alert(`Thank you ${name}! Your gift is recorded.`);
+          document.getElementById('modal').style.display = 'none';
+        })
+        .catch(() => alert('Network error, please try again'));
     };
   </script>
 </body>
