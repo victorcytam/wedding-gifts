@@ -98,6 +98,10 @@
 
     .admin-btn { margin:70px auto 40px; text-align:center; }
     .admin-btn button { background:#2c3e50; padding:11px 18px; border-radius:50px; font-size:12px; }
+    #modal-img:active { 
+  transform: scale(0.95); 
+  transition: transform 0.15s ease; 
+}
   </style>
 <!-- IMAGE ZOOM MODAL (ON TOP OF EVERYTHING) -->
 <div id="zoom-modal" class="modal" style="display:none; padding:0; background:rgba(0,0,0,0.95); z-index:9999;">
@@ -136,7 +140,7 @@
 
         <!-- STEP 1: Gift Details -->
         <div id="step-details">
-          <img id="modal-img" src="" alt="" style="cursor:zoom-in;" onclick="zoomImage(this.src)" />
+          <img id="modal-img" src="" alt="" style="cursor:zoom-in; transition:transform 0.2s;" onclick="zoomImage(this.src)" />
           <h3 id="modal-name"></h3>
           <p id="modal-details" style="white-space:pre-line;"></p>
           <p style="font-size:21px; color:#27ae60; margin:15px 0;">
