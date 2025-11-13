@@ -1,14 +1,13 @@
-// === HANNAH & VICTOR WEDDING - REAL-TIME SYNCED VERSION ===
-// Works on every phone instantly ♡
+// === HANNAH & VICTOR WEDDING - FINAL FIXED VERSION ===
+// No PayMe/FPS | Log Tab (0411) | Public "Gifted" only | New Colors
 
 const firebaseConfig = {
   databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // ← CHANGE THIS TO YOUR URL
-};
 
 let gifts = [];
-let claimedData = {};
+window.claimedData = {};  // ← MAKE GLOBAL
 
-// Load gifts.json
+// Load gifts
 fetch('gifts.json')
   .then(r => r.json())
   .then(data => {
@@ -16,13 +15,13 @@ fetch('gifts.json')
     loadFirebase();
   });
 
-// Load Firebase SDKs
+// Firebase
 function loadFirebase() {
   const appScript = document.createElement('script');
   appScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js";
   appScript.onload = () => {
     const dbScript = document.createElement('script');
-    dbScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js";
+    dbScript.src = "https://www.gstatic.com.firebasejs/10.8.1/firebase-database-compat.js";
     dbScript.onload = initFirebase;
     document.head.appendChild(dbScript);
   };
@@ -35,29 +34,26 @@ function initFirebase() {
   const ref = db.ref('weddingGifts');
 
   ref.on('value', (snapshot) => {
-    claimedData = snapshot.val() || {};
+    window.claimedData = snapshot.val() || {};
     applyClaimsAndRender();
   });
 }
 
 function applyClaimsAndRender() {
   gifts.forEach(g => {
-    if (!g.isRedPocket && claimedData[g.id]) {
+    if (!g.isRedPocket && window.claimedData[g.id]) {
       g.claimed = true;
-      g.claimedBy = claimedData[g.id].name;
-      g.blessing = claimedData[g.id].blessing;
-      g.payment = claimedData[g.id].payment;
     } else if (!g.isRedPocket) {
       g.claimed = false;
-      g.claimedBy = "";
     }
   });
   render();
+  if (document.getElementById('tab-log').style.display === 'block') renderLog();
 }
 
 function render() {
   const available = gifts.filter(g => g.isRedPocket || !g.claimed);
-  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && claimedData[g.id]));
+  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && window.claimedData[g.id]));
 
   document.getElementById('available').innerHTML = available.map(giftCard).join('');
   document.getElementById('gifted').innerHTML     = gifted.map(giftedCard).join('');
@@ -93,135 +89,14 @@ function openModal(id) {
   currentGift = gifts.find(g => g.id === id);
   if (!currentGift || (!currentGift.isRedPocket && currentGift.claimed)) return;
 
-  // Reset modal
   document.getElementById('step-details').style.display = 'block';
   document.getElementById('step-payment').style.display = 'none';
-  document.querySelectorAll('.qr').forEach(q => q.classList.remove('active'));
   document.getElementById('claimer-name').value = '';
   document.getElementById('blessing').value = '';
 
-  // Fill details
   document.getElementById('modal-img').src = currentGift.photo;
   document.getElementById('modal-name').textContent = currentGift.name;
   document.getElementById('modal-price').textContent = 
     currentGift.isRedPocket ? 'Any amount 隨意金額' : 'HK$ ' + currentGift.price;
-  document.getElementById('modal-details').textContent = currentGift.details || "Thank you for your love!";
+  document.getElementById('modal-details').textContent = currentGift.details || "Thank you!";
 
-  document.getElementById('modal').style.display = 'flex';
-}
-
-function closeModal() {
-  document.getElementById('modal').style.display = 'none';
-}
-
-function showPaymentStep() {
-  document.getElementById('step-details').style.display = 'none';
-  document.getElementById('step-payment').style.display = 'block';
-}
-
-function backToDetails() {
-  document.getElementById('step-payment').style.display = 'none';
-  document.getElementById('step-details').style.display = 'block';
-}
-
-function toggleQR(type) {
-  const qr = document.getElementById('qr-' + type);
-  const isActive = qr.classList.contains('active');
-  
-  // Hide all QRs and link
-  document.querySelectorAll('.qr').forEach(q => q.classList.remove('active'));
-  document.getElementById('payme-link').style.display = 'none';
-  
-  if (!isActive) {
-    qr.classList.add('active');
-    if (type === 'payme') {
-      document.getElementById('payme-link').style.display = 'block';
-    }
-  }
-}
-
-function confirmGift() {
-  const name = document.getElementById('claimer-name').value.trim();
-  const blessing = document.getElementById('blessing').value.trim();
-  if (!name) return alert('Please enter your name');
-
-  const db = firebase.database();
-  const data = { name, blessing: blessing || "No message", timestamp: Date.now() };
-
-  db.ref('weddingGifts/' + currentGift.id).set(data)
-    .then(() => {
-      alert(`Thank you ${name}! Your gift is recorded.`);
-      closeModal();
-    })
-    .catch(() => alert('Network error'));
-}
-
-  db.ref('weddingGifts/' + currentGift.id).set(data)
-    .then(() => {
-      alert(`Thank you ${name}! Your blessing is recorded.`);
-      closeModal();
-    })
-    .catch(() => alert('Network error, please try again'));
-}
-
-// === ADMIN PANEL ===
-function openAdminPanel() {
-  const pass = prompt("Admin password?", "");
-  if (pass !== "0411") return alert("Wrong password!");
-  
-  const select = document.getElementById("gift-to-reset");
-  select.innerHTML = '<option value="">-- Select to undo --</option>';
-  
-  Object.keys(claimedData).forEach(id => {
-    const g = gifts.find(x => x.id == id);
-    if (g) {
-      const record = claimedData[id];
-      const opt = new Option(`${g.name} — ${record.name} (${record.payment})`, id);
-      select.add(opt);
-    }
-  });
-  
-  if (select.options.length === 1) return alert("No gifts claimed yet!");
-  document.getElementById("admin-modal").style.display = "flex";
-}
-
-function performReset() {
-  if (document.getElementById("admin-pass").value !== "0411") return alert("Wrong password!");
-  const id = document.getElementById("gift-to-reset").value;
-  if (!id) return alert("Please select a gift");
-  
-  firebase.database().ref('weddingGifts/' + id).remove()
-    .then(() => {
-      alert("Gift undone successfully!");
-      document.getElementById("admin-modal").style.display = "none";
-    })
-    .catch(() => alert("Error undoing gift"));
-}
-
-// Zoom image in modal
-function zoomImage(src) {
-  document.getElementById('zoomed-img').src = src;
-  document.getElementById('zoom-modal').style.display = 'flex';
-}
-
-function closeZoom() {
-  document.getElementById('zoom-modal').style.display = 'none';
-}
-
-// Close zoom when clicking outside image
-document.getElementById('zoom-modal').onclick = function(e) {
-  if (e.target === this) closeZoom();
-};
-
-
-// Make gift image in modal clickable
-document.getElementById('modal-img').onclick = function() {
-  zoomImage(this.src);
-};
-
-window.onclick = e => {
-  const modal = document.getElementById('modal');
-  const admin = document.getElementById('admin-modal');
-  if (e.target === modal) closeModal();
-  if (e.target === admin) admin.style.display = 'none';
-};
