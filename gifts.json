@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Rice Cooker",
+    "name": "Rice Cooker（已預先購買）",
     "price": 2370,
     "photo": "images/rice.jpeg",
     "isRedPocket": false,
@@ -33,7 +33,7 @@
   },
   {
     "id": 5,
-    "name": "Dishwasher",
+    "name": "Dishwasher（已預先購買）",
     "price": 3700,
     "photo": "images/dishwasher.jpg",
     "isRedPocket": false,
@@ -54,6 +54,14 @@
     "photo": "images/IMG_7398.jpeg",
     "isRedPocket": false,
     "details": "Philips 2-in-1 Handheld Steamer STH7060/86\n\n"
+  },
+      {
+    "id": 8,
+    "name": "Towel",
+    "price": -,
+    "photo": "images/",
+    "isRedPocket": false,
+    "details": "軟熟厚毛巾，為生活補充能量\n\n"
   },
   {
     "id": 88,
