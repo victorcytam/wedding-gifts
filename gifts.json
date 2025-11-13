@@ -10,18 +10,18 @@
   {
     "id": 2,
     "name": "Dyson Airwrap",
-    "price": 4480,
-    "photo": "images/gift2.jpg",
+    "price": 4800,
+    "photo": "images/dyson.jpg",
     "isRedPocket": false,
-    "details": "Dyson Airwrap Complete Long – Prussian Blue\n\nFor Hannah's long, beautiful hair. No heat damage, just effortless curls every morning. 專為Hannah嘅長髮設計！每日醒來都係女神頭，無損傷造型"
+    "details": "Dyson Airwrap Co-anda2x – Ceramic Pink\n\nFor Hannah's long, beautiful hair, effortless curls every morning. 專為Hannah嘅長髮設計，無損傷造型"
   },
   {
     "id": 3,
-    "name": "Le Creuset Cast Iron Pot (26cm)",
+    "name": "BALLARINI - Venezia Granitium Fry Pan 20cm",
     "price": 2980,
-    "photo": "images/gift3.jpg",
+    "photo": "images/pan.jpg",
     "isRedPocket": false,
-    "details": "Le Creuset Signature Round Dutch Oven – Cerise Red\n\nOur first pot for family dinners, soups, and Sunday roasts. Will last a lifetime, just like our love. 紅色代表愛情！呢個煲會陪我哋煮第一餐、第一百餐、第一千餐"
+    "details": "BALLARINI - Venezia Granitium Fry Pan 20cm\n\nOur first fry pan for family dinners. 呢個Pan會陪我哋煮第一餐、第一百餐、第一千餐"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@
     "price": 2800,
     "photo": "images/nespresso.jpg",
     "isRedPocket": false,
-    "details": "Nespresso Atelier Coffee Machine\n\n朝早＋咖啡香＝完美開始！For our lazy Sunday mornings in bed with coffee and kisses. 星期日朝早，咖啡香＋你嘅吻＝幸福"
+    "details": "Nespresso Atelier Coffee Machine\n\nA perfect morning starts with coffee 朝早＋咖啡香＝完美開始！"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "price": 3700,
     "photo": "images/dishwasher.jpg",
     "isRedPocket": false,
-    "details": "Toshiba DW-05T2-HK Dishwasher\n\nNo more hand-washing after dinner! 食完飯唔使洗碗，更多時間抱抱你 ♡"
+    "details": "Toshiba DW-05T2-HK Dishwasher\n\nNo more dish-washing after dinner! 食完飯唔使洗碗，更多family time ♡"
   },
   {
     "id": 6,
@@ -45,7 +45,15 @@
     "price": 1700,
     "photo": "images/air.jpg",
     "isRedPocket": false,
-    "details": "LG PuriCare™ AeroHit Air Purifier\n\nClean air for our new home and future baby. 為我哋嘅新家同未來BB準備清新空氣！"
+    "details": "LG PuriCare™ AeroHit Air Purifier\n\nClean air for our new home. 為我哋嘅新家帶來清新空氣！"
+  },
+    {
+    "id": 7,
+    "name": "Handheld Steamer",
+    "price": 600,
+    "photo": "images/iron.jpg",
+    "isRedPocket": false,
+    "details": "Philips 2-in-1 Handheld Steamer STH7060/86\n\n"
   },
   {
     "id": 88,
