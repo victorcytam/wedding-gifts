@@ -67,7 +67,7 @@
     "id": 9,
     "name": "Standing Desk",
     "price": 2800,
-    "photo": "images/IMG_7406.jpg",
+    "photo": "images/IMG_7406.JPG",
     "isRedPocket": false,
     "details": "\n\n"
   },
@@ -76,6 +76,14 @@
     "name": "Cutlery (Zwilling)",
     "price": 600,
     "photo": "images/cultery.jpg",
+    "isRedPocket": false,
+    "details": "ZWILLING® Dinner Set 16pcs, Nova\n\n"
+  },
+  {
+    "id": 11,
+    "name": "Chopsticks",
+    "price": 80,
+    "photo": "images/chopsticks.png",
     "isRedPocket": false,
     "details": "ZWILLING® Dinner Set 16pcs, Nova\n\n"
   },
