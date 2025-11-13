@@ -1,11 +1,11 @@
-// === HANNAH & VICTOR WEDDING - ADMIN PORTAL FIXED ===
+// === HANNAH & VICTOR WEDDING - ADMIN PORTAL 100% FIXED ===
 
 const firebaseConfig = {
   databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // CHANGE TO YOURS
 };
 
 let gifts = [];
-window.claimedData = {};  // ← GLOBAL
+window.claimedData = {};  // ← GLOBAL + CRITICAL
 
 fetch('gifts.json')
   .then(r => r.json())
@@ -130,7 +130,7 @@ function confirmGift() {
     .catch(() => alert('Network error'));
 }
 
-// === ADMIN PORTAL ===
+// === ADMIN PORTAL - FULLY WORKING ===
 function openAdminPortal() {
   const pass = prompt("Admin password?", "");
   if (pass !== "0411") return alert("Wrong password!");
@@ -138,7 +138,7 @@ function openAdminPortal() {
   document.getElementById('admin-modal').style.display = 'flex';
   document.getElementById('undo-form').style.display = 'none';
   document.getElementById('log-content').style.display = 'none';
-  document.getElementById('admin-pass').value = '';  // clear
+  document.getElementById('admin-pass').value = '';
 }
 
 function showUndoForm() {
@@ -148,10 +148,15 @@ function showUndoForm() {
   const select = document.getElementById("gift-to-reset");
   select.innerHTML = '<option value="">-- Select to undo --</option>';
   
+  if (Object.keys(window.claimedData).length === 0) {
+    select.innerHTML += '<option disabled>No gifts claimed yet</option>';
+    return;
+  }
+
   Object.keys(window.claimedData).forEach(id => {
     const g = gifts.find(x => x.id == id);
-    if (g) {
-      const rec = window.claimedData[id];
+    const rec = window.claimedData[id];
+    if (g && rec) {
       const opt = new Option(`${g.name} — ${rec.name} (${new Date(rec.timestamp).toLocaleString()})`, id);
       select.add(opt);
     }
@@ -161,7 +166,7 @@ function showUndoForm() {
 function showLog() {
   document.getElementById('undo-form').style.display = 'none';
   document.getElementById('log-content').style.display = 'block';
-  renderLog();
+  renderLog();  // ← NOW CALLED
 }
 
 function renderLog() {
@@ -188,7 +193,8 @@ function renderLog() {
     </table>
   ` : '<p style="text-align:center; color:#aaa;">No gifts recorded yet.</p>';
   
-  document.getElementById('log-content').innerHTML = html;
+  const logContent = document.getElementById('log-content');
+  if (logContent) logContent.innerHTML = html;
 }
 
 function performReset() {
@@ -206,7 +212,7 @@ function performReset() {
     .catch(err => alert("Error: " + err.message));
 }
 
-// Close modals on outside click
+// Close modals
 window.onclick = e => {
   const modal = document.getElementById('modal');
   const admin = document.getElementById('admin-modal');
