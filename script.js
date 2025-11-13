@@ -1,11 +1,11 @@
-// === HANNAH & VICTOR WEDDING - ADMIN PORTAL 100% FIXED ===
+// === HANNAH & VICTOR WEDDING - ADMIN PORTAL FINAL FIX ===
 
 const firebaseConfig = {
   databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // CHANGE TO YOURS
 };
 
 let gifts = [];
-window.claimedData = {};  // ← GLOBAL + CRITICAL
+window.claimedData = {};  // ← GLOBAL
 
 fetch('gifts.json')
   .then(r => r.json())
@@ -130,7 +130,7 @@ function confirmGift() {
     .catch(() => alert('Network error'));
 }
 
-// === ADMIN PORTAL - FULLY WORKING ===
+// === ADMIN PORTAL - FINAL WORKING VERSION ===
 function openAdminPortal() {
   const pass = prompt("Admin password?", "");
   if (pass !== "0411") return alert("Wrong password!");
@@ -166,7 +166,7 @@ function showUndoForm() {
 function showLog() {
   document.getElementById('undo-form').style.display = 'none';
   document.getElementById('log-content').style.display = 'block';
-  renderLog();  // ← NOW CALLED
+  renderLog();
 }
 
 function renderLog() {
@@ -208,6 +208,9 @@ function performReset() {
     .then(() => {
       alert("Gift undone successfully!");
       document.getElementById('admin-modal').style.display = "none";
+      // Refresh dropdown and log
+      showUndoForm();
+      showLog();
     })
     .catch(err => alert("Error: " + err.message));
 }
