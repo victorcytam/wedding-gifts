@@ -79,11 +79,11 @@ function giftCard(g) {
 
 function giftedCard(g) {
   return `
-    <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
+    <div class="gift" style="opacity:0.9; border:2px solid #A2B6A7;">
       <img src="${g.photo}" alt="${g.name}">
       <div class="info">
         <strong>${g.name}</strong><br>
-        <em style="color:#27ae60;">Gifted</em>
+        <em style="color:#A2B6A7;">Gifted</em>
       </div>
     </div>`;
 }
@@ -143,19 +143,18 @@ function toggleQR(type) {
 function confirmGift() {
   const name = document.getElementById('claimer-name').value.trim();
   const blessing = document.getElementById('blessing').value.trim();
-  const activeQR = document.querySelector('.qr.active');
   if (!name) return alert('Please enter your name');
-  if (!activeQR) return alert('Please select FPS or PayMe');
-
-  const payment = activeQR.id === 'qr-fps' ? 'FPS' : 'PayMe';
 
   const db = firebase.database();
-  const data = { 
-    name, 
-    blessing: blessing || "No message", 
-    payment, 
-    timestamp: Date.now() 
-  };
+  const data = { name, blessing: blessing || "No message", timestamp: Date.now() };
+
+  db.ref('weddingGifts/' + currentGift.id).set(data)
+    .then(() => {
+      alert(`Thank you ${name}! Your gift is recorded.`);
+      closeModal();
+    })
+    .catch(() => alert('Network error'));
+}
 
   db.ref('weddingGifts/' + currentGift.id).set(data)
     .then(() => {
