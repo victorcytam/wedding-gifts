@@ -82,7 +82,7 @@
   {
     "id": 11,
     "name": "Chopsticks",
-    "price": 80,
+    "price": 300,
     "photo": "images/chopsticks.png",
     "isRedPocket": false,
     "details": \n\n"
