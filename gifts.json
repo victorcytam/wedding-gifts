@@ -89,10 +89,10 @@
   },
   {
     "id": 88,
-    "name": "Blessing",
-    "price": "Any amount",
-    "photo": "images/png",
+    "name": "Send a Blessing 送上祝福",
+    "price": "Free",
+    "photo": "images/blessing.png",
     "isRedPocket": true,
-    "details": "Your love and blessings mean the world to us.\n\n"
+    "details": "Send us your love and warm wishes! ♡\n\nNo gift needed — just your heartfelt message means the world to us.\n\n送上你嘅祝福！唔使禮物，你嘅心意就係最好嘅禮物"
   }
 ]
