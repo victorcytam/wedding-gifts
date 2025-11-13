@@ -5,7 +5,7 @@
     "price": 2370,
     "photo": "images/rice.jpeg",
     "isRedPocket": false,
-    "details": "Toshiba RC-DR10T(W) 1L IH Rice Cooker"
+    "details": "Toshiba RC-DR10T(W) 1L IH Rice Cooker\n\nPerfect for fluffy rice every night! 每日都想食香噴噴嘅飯，呢個煲幫到我哋！"
   },
   {
     "id": 2,
@@ -29,7 +29,7 @@
     "price": 2800,
     "photo": "images/nespresso.jpg",
     "isRedPocket": false,
-    "details": "Nespresso Atelier Coffee Machine\n\朝早＋咖啡香＝完美開始"
+    "details": "Nespresso Atelier Coffee Machine\n\n朝早＋咖啡香＝完美開始"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@
     "price": 3700,
     "photo": "images/dishwasher.jpg",
     "isRedPocket": false,
-    "details": "Toshiba DW-05T2-HK Dishwasher\n\"
+    "details": "Toshiba DW-05T2-HK Dishwasher\n\nNo more hand-washing after dinner! 食完飯唔使洗碗，更多時間同家人相處 ♡"
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@
     "price": 1700,
     "photo": "images/air.jpg",
     "isRedPocket": false,
-    "details": "LG PuriCare™ AeroHit Air Purifier\n\"
+    "details": "LG PuriCare™ AeroHit Air Purifier\n\nClean air for our new home and future baby. 為我哋嘅新家準備清新空氣！"
   },
   {
     "id": 88,
