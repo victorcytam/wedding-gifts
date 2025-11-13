@@ -70,12 +70,19 @@ function giftCard(g) {
 }
 
 function giftedCard(g) {
+  let extra = '';
+  if (g.id === 88 && claimedData[g.id]) {
+    // For blessing: show message only
+    const messages = Object.values(claimedData[g.id]).map(r => r.blessing || "No message");
+    extra = messages.map(m => `<br><em style="font-size:14px; color:#e74c3c; font-style:italic;">“${m}”</em>`).join('');
+  }
+
   return `
     <div class="gift" style="opacity:0.9; border:2px solid #27ae60;">
       <img src="${g.photo}" alt="${g.name}">
       <div class="info">
         <strong>${g.name}</strong><br>
-        <em style="color:#27ae60;">Gifted</em>
+        <em style="color:#27ae60;">Gifted</em>${extra}
       </div>
     </div>`;
 }
