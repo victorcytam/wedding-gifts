@@ -46,10 +46,7 @@
     .redpocket { border: 3px solid #A2B6A7 !important; background: #f9fff9 !important; }
 
     /* Modal */
-    .modal { 
-      display:none; position:fixed; z-index:9998; left:0; top:0; width:100%; height:100%; 
-      overflow:auto; background:rgba(0,0,0,0.6); padding:15px; 
-    }
+    .modal { padding:15px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
     .modal-content { 
       border-radius:22px; padding:28px 22px; max-width:90%; margin:auto; 
       background:#fff; max-height:90vh; overflow-y:auto; 
@@ -57,3 +54,156 @@
     .close { float:right; font-size:28px; cursor:pointer; color:#aaa; }
 
     #step-details img { width:100px; height:100px; object-fit:cover; border-radius:15px; margin-bottom:15px; cursor:zoom-in; }
+    #proceed-btn { background:#E6CAC3; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; border:none; }
+
+    .input-group { margin:18px 0; }
+    .input-group input, .input-group textarea {
+      width:100%; padding:16px; border-radius:50px; border:1px solid #ddd; 
+      font-size:17px; text-align:center; resize:none;
+    }
+    .input-group textarea { height:100px; }
+
+    #confirm-btn { background:#A2B6A7; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; border:none; margin-top:15px; }
+
+    /* Admin Portal */
+    .admin-btn { margin:70px auto 40px; text-align:center; }
+    .admin-btn button { background:#A2B6A7; padding:11px 18px; border-radius:50px; font-size:12px; color:white; }
+
+    .admin-options { display:flex; flex-direction:column; gap:15px; margin:20px 0; }
+
+    /* Log Table */
+    #log-table { width:100%; border-collapse:collapse; margin-top:20px; }
+    #log-table th, #log-table td { padding:12px; text-align:left; border-bottom:1px solid #eee; font-size:15px; }
+    #log-table th { background:#f8f8f8; color:#A2B6A7; }
+
+    /* Zoom */
+    #zoom-modal { display:none; padding:0; background:rgba(0,0,0,0.95); z-index:9999; }
+    #zoom-modal img { max-width:95%; max-height:95%; object-fit:contain; border-radius:12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Hannah & Victor</h1>
+    <div class="date">22 November 2025</div>
+
+    <div class="thanks">
+      <strong>親愛的家人朋友，</strong><br><br>
+      感謝你們來到我們人生中重要的一天！有你哋在場已經係最好嘅禮物～<br><br>
+      Your presence is the greatest blessing. 如果你哋想另外送上心意<br>
+      以下係我哋準備嘅新居禮物清單，隨心選擇即可<br><br>
+      多謝你哋嘅愛心同支持！感恩有你哋！
+    </div>
+
+    <h2 style="color:#E6CAC3; text-align:center; margin:40px 0 20px;">Available Gifts 可選禮物</h2>
+    <div id="available"></div>
+
+    <h2 style="color:#A2B6A7; text-align:center; margin:50px 0 20px;">Already Gifted 已送出嘅祝福</h2>
+    <div id="gifted"></div>
+
+    <!-- Claim Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+
+        <div id="step-details">
+          <img id="modal-img" src="" alt="" onclick="zoomImage(this.src)" />
+          <h3 id="modal-name"></h3>
+          <p id="modal-details" style="white-space:pre-line; color:#555;"></p>
+          <p style="font-size:21px; color:#A2B6A7; margin:15px 0;">
+            <span id="modal-price"></span>
+          </p>
+          <button id="proceed-btn" onclick="showPaymentStep()">Proceed</button>
+        </div>
+
+        <div id="step-payment" style="display:none;">
+          <div class="input-group">
+            <input type="text" id="claimer-name" placeholder="Your name 你的名字" required />
+          </div>
+          <div class="input-group">
+            <textarea id="blessing" placeholder="Leave a blessing (optional) 送上祝福（可選）"></textarea>
+          </div>
+          <button id="confirm-btn" onclick="confirmGift()">I've Gifted – Record It</button>
+          <button onclick="backToDetails()" style="margin-top:10px; background:#ddd; padding:14px; border-radius:50px; width:100%; border:none;">
+            ← Back
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zoom Modal -->
+    <div id="zoom-modal" class="modal">
+      <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
+        <img id="zoomed-img" src="" />
+        <span onclick="closeZoom()" style="position:absolute; top:15px; right:15px; font-size:36px; color:white; cursor:pointer; background:rgba(0,0,0,0.6); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;">
+          ×
+        </span>
+      </div>
+    </div>
+
+    <!-- Admin Portal Button -->
+    <div class="admin-btn">
+      <button onclick="openAdminPortal()">Admin Portal</button>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h3 style="color:#E6CAC3;">Admin Portal</h3>
+
+        <div class="admin-options">
+          <button onclick="showUndoForm()" style="background:#A2B6A7; color:white; padding:16px; border-radius:50px; font-size:16px; width:100%; border:none; margin-bottom:10px;">
+            Undo Gift
+          </button>
+          <button onclick="showLog()" style="background:#E6CAC3; color:white; padding:16px; border-radius:50px; font-size:16px; width:100%; border:none;">
+            Show Gifting Log
+          </button>
+        </div>
+
+        <!-- Undo Form -->
+        <div id="undo-form" style="display:none; margin-top:20px;">
+          <p>Select gift to undo:</p>
+          <select id="gift-to-reset" style="width:100%; padding:12px; margin:15px 0; border-radius:50px; border:1px solid #ddd;"></select>
+          <input type="password" id="admin-pass" placeholder="Re-enter password 0411" style="width:100%; padding:12px; margin:10px 0; border-radius:50px; text-align:center;" />
+          <button onclick="performReset()" style="background:#A2B6A7; color:white; padding:12px; border-radius:50px; width:100%; border:none;">
+            Confirm Undo
+          </button>
+        </div>
+
+        <!-- Log Table -->
+        <div id="log-content" style="display:none; margin-top:20px; max-height:400px; overflow-y:auto;">
+          <!-- Filled by JS -->
+        </div>
+
+        <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-top:20px; background:#ddd; padding:14px; border-radius:50px; width:100%; border:none;">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Zoom functions
+    function zoomImage(src) { 
+      document.getElementById('zoomed-img').src = src; 
+      document.getElementById('zoom-modal').style.display = 'flex'; 
+    }
+    function closeZoom() { 
+      document.getElementById('zoom-modal').style.display = 'none'; 
+    }
+    document.getElementById('zoom-modal').onclick = e => { 
+      if (e.target === this) closeZoom(); 
+    };
+
+    // Close modals on outside click
+    window.onclick = e => {
+      const modal = document.getElementById('modal');
+      const admin = document.getElementById('admin-modal');
+      const zoom = document.getElementById('zoom-modal');
+      if (e.target === modal) closeModal();
+      if (e.target === admin) admin.style.display = 'none';
+      if (e.target === zoom) closeZoom();
+    };
+  </script>
+</body>
+</html>
