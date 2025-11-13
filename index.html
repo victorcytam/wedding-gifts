@@ -94,10 +94,10 @@
       多謝你哋嘅愛心同支持！感謝大家！
     </div>
 
-    <h2 style="color:#E6CAC3; text-align:center; margin:40px 0 20px;">Available Gifts 可選禮物</h2>
+    <h2 style="color:#e74c3c; text-align:center; margin:40px 0 20px;">Available Gifts 可選禮物</h2>
     <div id="available"></div>
 
-    <h2 style="color:#A2B6A7; text-align:center; margin:50px 0 20px;">Already Gifted 已送出嘅祝福</h2>
+    <h2 style="color:#27ae60; text-align:center; margin:50px 0 20px;">Already Gifted 已送出嘅祝福</h2>
     <div id="gifted"></div>
 
     <!-- Claim Modal -->
@@ -105,105 +105,83 @@
       <div class="modal-content">
         <span class="close" onclick="closeModal()">×</span>
 
+        <!-- STEP 1: Details -->
         <div id="step-details">
           <img id="modal-img" src="" alt="" onclick="zoomImage(this.src)" />
           <h3 id="modal-name"></h3>
-          <p id="modal-details" style="white-space:pre-line; color:#555;"></p>
-          <p style="font-size:21px; color:#A2B6A7; margin:15px 0;">
+          <p id="modal-details"></p>
+          <p style="font-size:21px; color:#27ae60; margin:15px 0;">
             <span id="modal-price"></span>
           </p>
           <button id="proceed-btn" onclick="showPaymentStep()">Proceed</button>
         </div>
 
-        <div id="step-payment" style="display:none;">
+        <!-- STEP 2: Payment + Form -->
+        <div id="step-payment">
+          <div id="payment-section">
+            <div class="payment-btns">
+              <button class="btn-fps" onclick="toggleQR('fps')">FPS</button>
+              <button class="btn-payme" onclick="toggleQR('payme')">PayMe</button>
+            </div>
+            <div class="qr-container">
+              <img id="qr-fps" src="images/qr-fps.png" alt="FPS" class="qr" />
+              <img id="qr-payme" src="images/qr-fps.png" alt="PayMe" class="qr" />
+              <div id="payme-link" style="display:none; text-align:center; margin-top:15px;">
+                <a href="https://qr.payme.hsbc.com.hk/1/UHhCZW6DY5bkQADWUJ5YoF" target="_blank" 
+                   style="color:#e74c3c; font-weight:600; font-size:16px; text-decoration:underline;">
+                  Click here to pay via PayMe
+                </a>
+              </div>
+            </div>
+          </div>
+
           <div class="input-group">
             <input type="text" id="claimer-name" placeholder="Your name 你的名字" required />
           </div>
           <div class="input-group">
             <textarea id="blessing" placeholder="Leave a blessing (optional) 送上祝福（可選）"></textarea>
           </div>
-          <button id="confirm-btn" onclick="confirmGift()">I've Gifted – Record It</button>
-          <button onclick="backToDetails()" style="margin-top:10px; background:#ddd; padding:14px; border-radius:50px; width:100%; border:none;">
+
+          <button id="confirm-btn" onclick="confirmGift()">I've Paid – Record My Gift</button>
+          <button onclick="backToDetails()" style="margin-top:10px; background:#95a5a6; color:white; padding:14px; border-radius:50px; width:100%; border:none; font-size:16px;">
             ← Back
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Zoom Modal -->
+    <!-- ZOOM MODAL -->
     <div id="zoom-modal" class="modal">
       <div style="position:relative; width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
         <img id="zoomed-img" src="" />
-        <span onclick="closeZoom()" style="position:absolute; top:15px; right:15px; font-size:36px; color:white; cursor:pointer; background:rgba(0,0,0,0.6); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;">
+        <span onclick="closeZoom()" 
+              style="position:absolute; top:15px; right:15px; font-size:36px; color:white; cursor:pointer; background:rgba(0,0,0,0.6); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center; font-weight:bold;">
           ×
         </span>
       </div>
     </div>
 
-    <!-- Admin Portal Button -->
+    <!-- Admin Button -->
     <div class="admin-btn">
-      <button onclick="openAdminPortal()">Admin Portal</button>
+      <button onclick="openAdminPanel()">Undo a gift (admin only)</button>
     </div>
 
     <!-- Admin Modal -->
     <div id="admin-modal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <h3 style="color:#E6CAC3;">Admin Portal</h3>
-
-        <div class="admin-options">
-          <button onclick="showUndoForm()" style="background:#A2B6A7; color:white; padding:16px; border-radius:50px; font-size:16px; width:100%; border:none; margin-bottom:10px;">
-            Undo Gift
-          </button>
-          <button onclick="showLog()" style="background:#E6CAC3; color:white; padding:16px; border-radius:50px; font-size:16px; width:100%; border:none;">
-            Show Gifting Log
-          </button>
+      <div class="modal-content" style="max-width:400px;">
+        <h3 style="color:#c0392b;">Admin: Undo Gift</h3>
+        <p>Password:</p>
+        <input type="password" id="admin-pass" placeholder="Enter password" style="width:100%; padding:12px; border-radius:50px; text-align:center;" />
+        <p>Select gift to undo:</p>
+        <select id="gift-to-reset" style="width:100%; padding:12px; margin:15px 0; border-radius:50px;"></select>
+        <div style="margin-top:20px;">
+          <button onclick="performReset()" style="background:#27ae60; padding:12px 24px; border-radius:50px;">Confirm Undo</button>
+          <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-left:10px; background:#95a5a6; padding:12px 20px; border-radius:50px;">Cancel</button>
         </div>
-
-        <!-- Undo Form -->
-        <div id="undo-form" style="display:none; margin-top:20px;">
-          <p>Select gift to undo:</p>
-          <select id="gift-to-reset" style="width:100%; padding:12px; margin:15px 0; border-radius:50px; border:1px solid #ddd;"></select>
-          <input type="password" id="admin-pass" placeholder="Re-enter password 0411" style="width:100%; padding:12px; margin:10px 0; border-radius:50px; text-align:center;" />
-          <button onclick="performReset()" style="background:#A2B6A7; color:white; padding:12px; border-radius:50px; width:100%; border:none;">
-            Confirm Undo
-          </button>
-        </div>
-
-        <!-- Log Table -->
-        <div id="log-content" style="display:none; margin-top:20px; max-height:400px; overflow-y:auto;">
-          <!-- Filled by JS -->
-        </div>
-
-        <button onclick="document.getElementById('admin-modal').style.display='none'" style="margin-top:20px; background:#ddd; padding:14px; border-radius:50px; width:100%; border:none;">
-          Close
-        </button>
       </div>
     </div>
   </div>
 
   <script src="script.js"></script>
-  <script>
-    // Zoom functions
-    function zoomImage(src) { 
-      document.getElementById('zoomed-img').src = src; 
-      document.getElementById('zoom-modal').style.display = 'flex'; 
-    }
-    function closeZoom() { 
-      document.getElementById('zoom-modal').style.display = 'none'; 
-    }
-    document.getElementById('zoom-modal').onclick = e => { 
-      if (e.target === this) closeZoom(); 
-    };
-
-    // Close modals on outside click
-    window.onclick = e => {
-      const modal = document.getElementById('modal');
-      const admin = document.getElementById('admin-modal');
-      const zoom = document.getElementById('zoom-modal');
-      if (e.target === modal) closeModal();
-      if (e.target === admin) admin.style.display = 'none';
-      if (e.target === zoom) closeZoom();
-    };
-  </script>
 </body>
 </html>
