@@ -166,17 +166,17 @@
   <script src="script.js"></script>
   <script>
     function showTab(tab) {
-      if (tab === 'log') {
-        const pass = prompt("Password for Gifting Log?");
-        if (pass !== "0411") return alert("Wrong password!");
-      }
-      document.getElementById('tab-gifts').style.display = tab === 'gifts' ? 'block' : 'none';
-      document.getElementById('tab-log').style.display = tab === 'log' ? 'block' : 'none';
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab')[tab === 'gifts' ? 0 : 1].classList.add('active');
-      
-      if (tab === 'log') renderLog();
-    }
+  if (tab === 'log') {
+    const pass = prompt("Password for Gifting Log?");
+    if (pass !== "0411") return alert("Wrong password!");
+  }
+  document.getElementById('tab-gifts').style.display = tab === 'gifts' ? 'block' : 'none';
+  document.getElementById('tab-log').style.display = tab === 'log' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab')[tab === 'gifts' ? 0 : 1].classList.add('active');
+  
+  if (tab === 'log') window.renderLog();
+}
 
 
     // Modal functions
