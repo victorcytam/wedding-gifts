@@ -6,26 +6,22 @@
   <title>Hannah & Victor 22.11.2025</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    * { box-sizing: border-box; margin:0; padding:0; }
+    * { box-sizing: border-box; }
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-      background: #FAF8F5; 
-      min-height:100vh; 
+      background: linear-gradient(to bottom, #fffaf0, #fdf2e9); 
+      margin:0; padding:0; min-height:100vh; 
     }
     .container { max-width: 100%; margin: 0 auto; padding: 20px 15px; }
+    h1 { text-align:center; color:#c0392b; font-size:28px; margin:20px 0 8px; font-weight:600; }
+    .date { text-align:center; color:#e74c3c; font-size:19px; margin-bottom:25px; letter-spacing:1px; }
 
-    /* Header */
-    h1 { text-align:center; color:#E6CAC3; font-size:28px; margin:20px 0 8px; font-weight:600; }
-    .date { text-align:center; color:#A2B6A7; font-size:19px; margin-bottom:25px; }
-
-    /* Thanks */
     .thanks {
       background:#fff; padding:22px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,0.08);
-      margin:20px 0; text-align:center; line-height:1.9; font-size:16px; color:#555;
+      margin:20px 0; text-align:center; line-height:1.9; font-size:16px; color:#2c3e50;
     }
-    .thanks strong { color:#E6CAC3; font-size:19px; }
+    .thanks strong { color:#c0392b; font-size:19px; }
 
-    /* Gifts */
     .gift { 
       border-radius:18px; padding:18px; margin:18px 0; display:flex; align-items:center;
       background:#fff; box-shadow:0 8px 25px rgba(0,0,0,0.09); transition:all 0.2s;
@@ -36,25 +32,43 @@
       flex-shrink:0; background:#f0f0f0;
     }
     .gift .info { flex:1; }
-    .gift .price { font-weight:bold; color:#A2B6A7; font-size:19px; }
+    .gift .price { font-weight:bold; color:#27ae60; font-size:19px; }
     .gift button { 
-      background:#E6CAC3; color:white; border:none; padding:13px 24px; 
+      background:#e74c3c; color:white; border:none; padding:13px 24px; 
       border-radius:50px; cursor:pointer; font-size:15px; font-weight:500; min-width:120px;
     }
-    .gift button:active { background:#d6b8b1; }
+    .gift button:active { background:#c0392b; }
 
-    .redpocket { border: 3px solid #A2B6A7 !important; background: #f9fff9 !important; }
+    .redpocket { border: 3px solid #e74c3c !important; background: linear-gradient(135deg, #fff9f9, #fff3f3) !important; }
 
-    /* Modal */
-    .modal { padding:15px; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+    /* MODAL */
+    .modal { 
+      padding:15px; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    }
     .modal-content { 
       border-radius:22px; padding:28px 22px; max-width:90%; margin:auto; 
-      background:#fff; max-height:90vh; overflow-y:auto; 
+      background:#fff; box-shadow:0 15px 40px rgba(0,0,0,0.15); 
+      max-height:90vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
     }
     .close { float:right; font-size:28px; cursor:pointer; color:#aaa; }
 
+    #step-details { text-align:center; }
     #step-details img { width:100px; height:100px; object-fit:cover; border-radius:15px; margin-bottom:15px; cursor:zoom-in; }
-    #proceed-btn { background:#E6CAC3; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; border:none; }
+    #step-details h3 { margin:12px 0 8px; font-size:20px; }
+    #step-details p { color:#555; margin:12px 0; line-height:1.7; font-size:15px; white-space:pre-line; }
+    #proceed-btn { background:#e74c3c; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; margin-top:20px; border:none; }
+
+    #step-payment { display:none; text-align:center; }
+    .payment-btns { display:flex; gap:15px; margin:20px 0; }
+    .btn-fps, .btn-payme { 
+      flex:1; padding:16px; border-radius:50px; font-size:16px; border:none; color:white; font-weight:600;
+    }
+    .btn-fps { background:#1e90ff; }
+    .btn-payme { background:#e74c3c; }
+    .qr-container { margin:20px 0; }
+    .qr { width:240px; margin:0 auto; border:10px solid #fff; border-radius:18px; box-shadow:0 6px 25px rgba(0,0,0,0.15); display:none; }
+    .qr.active { display:block; animation:fadeIn 0.3s; }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
 
     .input-group { margin:18px 0; }
     .input-group input, .input-group textarea {
@@ -63,22 +77,17 @@
     }
     .input-group textarea { height:100px; }
 
-    #confirm-btn { background:#A2B6A7; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; border:none; margin-top:15px; }
+    #confirm-btn { background:#27ae60; color:white; padding:16px; border-radius:50px; font-size:17px; width:100%; border:none; margin-top:15px; }
 
-    /* Admin Portal */
     .admin-btn { margin:70px auto 40px; text-align:center; }
-    .admin-btn button { background:#A2B6A7; padding:11px 18px; border-radius:50px; font-size:12px; color:white; }
+    .admin-btn button { background:#2c3e50; padding:11px 18px; border-radius:50px; font-size:12px; }
 
-    .admin-options { display:flex; flex-direction:column; gap:15px; margin:20px 0; }
-
-    /* Log Table */
-    #log-table { width:100%; border-collapse:collapse; margin-top:20px; }
-    #log-table th, #log-table td { padding:12px; text-align:left; border-bottom:1px solid #eee; font-size:15px; }
-    #log-table th { background:#f8f8f8; color:#A2B6A7; }
-
-    /* Zoom */
+    /* ZOOM MODAL */
     #zoom-modal { display:none; padding:0; background:rgba(0,0,0,0.95); z-index:9999; }
     #zoom-modal img { max-width:95%; max-height:95%; object-fit:contain; border-radius:12px; }
+
+    /* Tap feedback */
+    #modal-img:active { transform: scale(0.95); transition: transform 0.15s ease; }
   </style>
 </head>
 <body>
@@ -87,11 +96,11 @@
     <div class="date">22 November 2025</div>
 
     <div class="thanks">
-      <strong>親愛的家人朋友，</strong><br><br>
-      感謝你們來到我們人生中重要的一天！有你哋在場已經係最好嘅禮物～<br><br>
-      Your presence is the greatest blessing. 如果你哋想另外送上心意<br>
-      以下係我哋準備嘅新居禮物清單，隨心選擇即可<br><br>
-      多謝你哋嘅愛心同支持！感謝大家！
+      <strong>親愛的家人朋友</strong><br><br>
+      感謝你們來到我們人生中最重要的一天！有你哋在場已經係最好嘅禮物～<br><br>
+      Your presence is the greatest blessing. 如果你哋想再送上祝福，<br>
+      以下係我哋準備嘅禮物清單同送祝福選項，隨心選擇即可<br><br>
+      多謝你哋嘅愛心同支持！
     </div>
 
     <h2 style="color:#e74c3c; text-align:center; margin:40px 0 20px;">Available Gifts 可選禮物</h2>
