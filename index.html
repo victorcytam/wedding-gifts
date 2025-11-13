@@ -178,30 +178,6 @@
       if (tab === 'log') renderLog();
     }
 
-    function renderLog() {
-      const logs = Object.entries(claimedData)
-        .map(([id, rec]) => {
-          const g = gifts.find(x => x.id == id);
-          return { ...rec, giftName: g?.name || 'Unknown' };
-        })
-        .sort((a,b) => b.timestamp - a.timestamp);
-
-      const html = logs.length ? `
-        <table id="log-table">
-          <tr><th>Gift</th><th>Name</th><th>Blessing</th><th>Time</th></tr>
-          ${logs.map(l => `
-            <tr>
-              <td><strong>${l.giftName}</strong></td>
-              <td>${l.name}</td>
-              <td style="max-width:200px; word-wrap:break-word;">${l.blessing}</td>
-              <td>${new Date(l.timestamp).toLocaleString()}</td>
-            </tr>
-          `).join('')}
-        </table>
-      ` : '<p style="text-align:center; color:#aaa;">No gifts recorded yet.</p>';
-      
-      document.getElementById('log-content').innerHTML = html;
-    }
 
     // Modal functions
     function zoomImage(src) { document.getElementById('zoomed-img').src = src; document.getElementById('zoom-modal').style.display = 'flex'; }
