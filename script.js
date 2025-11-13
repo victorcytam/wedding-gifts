@@ -1,11 +1,11 @@
-// === HANNAH & VICTOR WEDDING - ADMIN PORTAL VERSION ===
+// === HANNAH & VICTOR WEDDING - ADMIN PORTAL FIXED ===
 
 const firebaseConfig = {
   databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // CHANGE TO YOURS
 };
 
 let gifts = [];
-let claimedData = {};
+window.claimedData = {};  // ← GLOBAL
 
 fetch('gifts.json')
   .then(r => r.json())
@@ -32,14 +32,14 @@ function initFirebase() {
   const ref = db.ref('weddingGifts');
 
   ref.on('value', (snapshot) => {
-    claimedData = snapshot.val() || {};
+    window.claimedData = snapshot.val() || {};
     applyClaimsAndRender();
   });
 }
 
 function applyClaimsAndRender() {
   gifts.forEach(g => {
-    if (!g.isRedPocket && claimedData[g.id]) {
+    if (!g.isRedPocket && window.claimedData[g.id]) {
       g.claimed = true;
     } else if (!g.isRedPocket) {
       g.claimed = false;
@@ -50,7 +50,7 @@ function applyClaimsAndRender() {
 
 function render() {
   const available = gifts.filter(g => g.isRedPocket || !g.claimed);
-  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && claimedData[g.id]));
+  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && window.claimedData[g.id]));
 
   document.getElementById('available').innerHTML = available.map(giftCard).join('');
   document.getElementById('gifted').innerHTML     = gifted.map(giftedCard).join('');
@@ -130,13 +130,15 @@ function confirmGift() {
     .catch(() => alert('Network error'));
 }
 
-// === ADMIN ===
+// === ADMIN PORTAL ===
 function openAdminPortal() {
   const pass = prompt("Admin password?", "");
   if (pass !== "0411") return alert("Wrong password!");
+  
   document.getElementById('admin-modal').style.display = 'flex';
   document.getElementById('undo-form').style.display = 'none';
   document.getElementById('log-content').style.display = 'none';
+  document.getElementById('admin-pass').value = '';  // clear
 }
 
 function showUndoForm() {
@@ -146,10 +148,11 @@ function showUndoForm() {
   const select = document.getElementById("gift-to-reset");
   select.innerHTML = '<option value="">-- Select to undo --</option>';
   
-  Object.keys(claimedData).forEach(id => {
+  Object.keys(window.claimedData).forEach(id => {
     const g = gifts.find(x => x.id == id);
     if (g) {
-      const opt = new Option(`${g.name} — ${claimedData[id].name}`, id);
+      const rec = window.claimedData[id];
+      const opt = new Option(`${g.name} — ${rec.name} (${new Date(rec.timestamp).toLocaleString()})`, id);
       select.add(opt);
     }
   });
@@ -162,24 +165,26 @@ function showLog() {
 }
 
 function renderLog() {
-  const logs = Object.entries(claimedData)
+  const logs = Object.entries(window.claimedData)
     .map(([id, rec]) => {
       const g = gifts.find(x => x.id == id);
       return { ...rec, giftName: g?.name || 'Unknown' };
     })
     .sort((a,b) => b.timestamp - a.timestamp);
 
+  const rows = logs.map(l => `
+    <tr>
+      <td><strong>${l.giftName}</strong></td>
+      <td>${l.name}</td>
+      <td style="max-width:200px; word-wrap:break-word;">${l.blessing}</td>
+      <td>${new Date(l.timestamp).toLocaleString()}</td>
+    </tr>
+  `).join('');
+
   const html = logs.length ? `
     <table id="log-table">
       <tr><th>Gift</th><th>Name</th><th>Blessing</th><th>Time</th></tr>
-      ${logs.map(l => `
-        <tr>
-          <td><strong>${l.giftName}</strong></td>
-          <td>${l.name}</td>
-          <td style="max-width:200px; word-wrap:break-word;">${l.blessing}</td>
-          <td>${new Date(l.timestamp).toLocaleString()}</td>
-        </tr>
-      `).join('')}
+      ${rows}
     </table>
   ` : '<p style="text-align:center; color:#aaa;">No gifts recorded yet.</p>';
   
@@ -187,13 +192,26 @@ function renderLog() {
 }
 
 function performReset() {
-  if (document.getElementById("admin-pass").value !== "0411") return alert("Wrong password!");
+  const pass = document.getElementById("admin-pass").value;
+  if (pass !== "0411") return alert("Wrong password!");
+  
   const id = document.getElementById("gift-to-reset").value;
   if (!id) return alert("Please select a gift");
   
   firebase.database().ref('weddingGifts/' + id).remove()
     .then(() => {
-      alert("Gift undone!");
-      document.getElementById("admin-modal").style.display = "none";
-    });
+      alert("Gift undone successfully!");
+      document.getElementById('admin-modal').style.display = "none";
+    })
+    .catch(err => alert("Error: " + err.message));
 }
+
+// Close modals on outside click
+window.onclick = e => {
+  const modal = document.getElementById('modal');
+  const admin = document.getElementById('admin-modal');
+  const zoom = document.getElementById('zoom-modal');
+  if (e.target === modal) closeModal();
+  if (e.target === admin) admin.style.display = 'none';
+  if (e.target === zoom) document.getElementById('zoom-modal').style.display = 'none';
+};
