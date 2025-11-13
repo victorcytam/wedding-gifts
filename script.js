@@ -1,13 +1,12 @@
-// === HANNAH & VICTOR WEDDING - FINAL FIXED VERSION ===
-// No PayMe/FPS | Log Tab (0411) | Public "Gifted" only | New Colors
+// === HANNAH & VICTOR WEDDING - ADMIN PORTAL VERSION ===
 
 const firebaseConfig = {
-  databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // ← CHANGE THIS TO YOUR URL
+  databaseURL: "https://hannah-victor-wedding-default-rtdb.firebaseio.com/"  // CHANGE TO YOURS
+};
 
 let gifts = [];
-window.claimedData = {};  // ← MAKE GLOBAL
+let claimedData = {};
 
-// Load gifts
 fetch('gifts.json')
   .then(r => r.json())
   .then(data => {
@@ -15,13 +14,12 @@ fetch('gifts.json')
     loadFirebase();
   });
 
-// Firebase
 function loadFirebase() {
   const appScript = document.createElement('script');
   appScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js";
   appScript.onload = () => {
     const dbScript = document.createElement('script');
-    dbScript.src = "https://www.gstatic.com.firebasejs/10.8.1/firebase-database-compat.js";
+    dbScript.src = "https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js";
     dbScript.onload = initFirebase;
     document.head.appendChild(dbScript);
   };
@@ -34,26 +32,25 @@ function initFirebase() {
   const ref = db.ref('weddingGifts');
 
   ref.on('value', (snapshot) => {
-    window.claimedData = snapshot.val() || {};
+    claimedData = snapshot.val() || {};
     applyClaimsAndRender();
   });
 }
 
 function applyClaimsAndRender() {
   gifts.forEach(g => {
-    if (!g.isRedPocket && window.claimedData[g.id]) {
+    if (!g.isRedPocket && claimedData[g.id]) {
       g.claimed = true;
     } else if (!g.isRedPocket) {
       g.claimed = false;
     }
   });
   render();
-  if (document.getElementById('tab-log').style.display === 'block') renderLog();
 }
 
 function render() {
   const available = gifts.filter(g => g.isRedPocket || !g.claimed);
-  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && window.claimedData[g.id]));
+  const gifted    = gifts.filter(g => g.claimed || (g.isRedPocket && claimedData[g.id]));
 
   document.getElementById('available').innerHTML = available.map(giftCard).join('');
   document.getElementById('gifted').innerHTML     = gifted.map(giftedCard).join('');
@@ -100,3 +97,103 @@ function openModal(id) {
     currentGift.isRedPocket ? 'Any amount 隨意金額' : 'HK$ ' + currentGift.price;
   document.getElementById('modal-details').textContent = currentGift.details || "Thank you!";
 
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+function showPaymentStep() {
+  document.getElementById('step-details').style.display = 'none';
+  document.getElementById('step-payment').style.display = 'block';
+}
+
+function backToDetails() {
+  document.getElementById('step-payment').style.display = 'none';
+  document.getElementById('step-details').style.display = 'block';
+}
+
+function confirmGift() {
+  const name = document.getElementById('claimer-name').value.trim();
+  const blessing = document.getElementById('blessing').value.trim();
+  if (!name) return alert('Please enter your name');
+
+  const db = firebase.database();
+  const data = { name, blessing: blessing || "No message", timestamp: Date.now() };
+
+  db.ref('weddingGifts/' + currentGift.id).set(data)
+    .then(() => {
+      alert(`Thank you ${name}! Your gift is recorded.`);
+      closeModal();
+    })
+    .catch(() => alert('Network error'));
+}
+
+// === ADMIN ===
+function openAdminPortal() {
+  const pass = prompt("Admin password?", "");
+  if (pass !== "0411") return alert("Wrong password!");
+  document.getElementById('admin-modal').style.display = 'flex';
+  document.getElementById('undo-form').style.display = 'none';
+  document.getElementById('log-content').style.display = 'none';
+}
+
+function showUndoForm() {
+  document.getElementById('undo-form').style.display = 'block';
+  document.getElementById('log-content').style.display = 'none';
+  
+  const select = document.getElementById("gift-to-reset");
+  select.innerHTML = '<option value="">-- Select to undo --</option>';
+  
+  Object.keys(claimedData).forEach(id => {
+    const g = gifts.find(x => x.id == id);
+    if (g) {
+      const opt = new Option(`${g.name} — ${claimedData[id].name}`, id);
+      select.add(opt);
+    }
+  });
+}
+
+function showLog() {
+  document.getElementById('undo-form').style.display = 'none';
+  document.getElementById('log-content').style.display = 'block';
+  renderLog();
+}
+
+function renderLog() {
+  const logs = Object.entries(claimedData)
+    .map(([id, rec]) => {
+      const g = gifts.find(x => x.id == id);
+      return { ...rec, giftName: g?.name || 'Unknown' };
+    })
+    .sort((a,b) => b.timestamp - a.timestamp);
+
+  const html = logs.length ? `
+    <table id="log-table">
+      <tr><th>Gift</th><th>Name</th><th>Blessing</th><th>Time</th></tr>
+      ${logs.map(l => `
+        <tr>
+          <td><strong>${l.giftName}</strong></td>
+          <td>${l.name}</td>
+          <td style="max-width:200px; word-wrap:break-word;">${l.blessing}</td>
+          <td>${new Date(l.timestamp).toLocaleString()}</td>
+        </tr>
+      `).join('')}
+    </table>
+  ` : '<p style="text-align:center; color:#aaa;">No gifts recorded yet.</p>';
+  
+  document.getElementById('log-content').innerHTML = html;
+}
+
+function performReset() {
+  if (document.getElementById("admin-pass").value !== "0411") return alert("Wrong password!");
+  const id = document.getElementById("gift-to-reset").value;
+  if (!id) return alert("Please select a gift");
+  
+  firebase.database().ref('weddingGifts/' + id).remove()
+    .then(() => {
+      alert("Gift undone!");
+      document.getElementById("admin-modal").style.display = "none";
+    });
+}
